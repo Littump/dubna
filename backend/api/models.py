@@ -17,7 +17,7 @@ class Client(models.Model):
 
     CLIENT_TYPE_CHOICE = [
         ('individual', 'физическое лицо'),
-        ('legal', 'юридическое лицо')
+        ('legal', 'юридическое лицо'),
     ]
     client_type = models.CharField(max_length=128, choices=CLIENT_TYPE_CHOICE)
 
@@ -25,7 +25,8 @@ class Client(models.Model):
         ('connecting', 'подключение'),
         ('active', 'активный'),
         ('blocked', 'заблокирован'),
-        ('annulled', 'рассторгнут')
+        ('annulled', 'рассторгнут'),
+        ('stopped', 'приостановлено'),
     ]
     status = models.CharField(max_length=128, choices=STATUS_CHOICE)
 
@@ -37,6 +38,8 @@ class Client(models.Model):
         on_delete=models.CASCADE,
     )
 
+    last_update = models.DateTimeField(auto_now=True)
+
 
 class Payment(models.Model):
     TYPE_CHOICES = [
@@ -47,7 +50,7 @@ class Payment(models.Model):
         ('card', 'Картой'),
         ('post', 'Почта России'),
         ('Sber', 'Сбер-онлайн'),
-        ('SBP', 'СПБ')
+        ('SBP', 'СПБ'),
     ]
 
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
