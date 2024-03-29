@@ -15,7 +15,7 @@ from yandex.cloud.logging.v1.log_ingestion_service_pb2_grpc import \
     LogIngestionServiceStub
 from yandex.cloud.logging.v1.log_resource_pb2 import LogEntryResource
 
-from ... import config
+from dubna import config
 
 
 _CLOUD_LOGLEVEL = {
