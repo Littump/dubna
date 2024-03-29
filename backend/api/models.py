@@ -29,8 +29,8 @@ class Client(models.Model):
     ]
     status = models.CharField(max_length=128, choices=STATUS_CHOICE)
 
-    balance = models.DecimalField(max_digits=10, decimal_places=2)
-    limit = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    limit = models.DecimalField(max_digits=10, decimal_places=2, default=30000)
 
     department = models.ForeignKey(
         Department,
