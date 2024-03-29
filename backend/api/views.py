@@ -7,11 +7,11 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 
-from api.serializers import ClientSerializer
+from api.serializers import ClientSerializer, DepartmentSerializer
 from reducers.api_reducer import ApiReducer
 from dubna.logger import get_logger
 
-from api.models import Client
+from api.models import Client, Department
 # class ApiViewSet(ViewSet):
 
 #     api_reducer = ApiReducer()
@@ -41,3 +41,8 @@ from api.models import Client
 class ClientViewSet(ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+
+
+class DepartmentViewSet(ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
