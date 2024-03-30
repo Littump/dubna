@@ -1,8 +1,24 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import timedelta
+from django.core.validators import MinValueValidator
+from decimal import Decimal
 
 User = get_user_model()
+
+
+class Service(models.Model):
+    TYPE_CHOICES = [
+        ('videonablyudenie', 'Видеонаблюдение'),
+        ('domofonia', 'Домофония'),
+        ('internet', 'Интернет'),
+        ('oborudovanie', 'Оборудование'),
+        ('programmnoe_obespechenie', 'Подписка на программное обеспечение'),
+        ('televidenie', 'Телевидение'),
+        ('telefon', 'Телефонная связь'),
+        ('hosting', 'Хостинг веб-ресурсов'),
+    ]
+    type = models.CharField(max_length=32)
 
 
 class Client(models.Model):
@@ -10,12 +26,12 @@ class Client(models.Model):
     last_name = models.CharField(max_length=32, blank=True, default='')
     patronymic = models.CharField(max_length=64)
 
-    phone = models.CharField(max_length=11)
-    birthday = models.DateField()
-    connection_address = models.CharField(max_length=15)
+    phone = models.CharField(max_length=16)
+    birthday = models.DateField(max_length=32)
+    connection_address = models.CharField(max_length=16)
 
     CLIENT_TYPE_CHOICE = [
-        ('individual', 'физическое лицо'),
+        ('individuall', 'физическое лицо'),
         ('legal', 'юридическое лицо'),
     ]
     client_type = models.CharField(max_length=128, choices=CLIENT_TYPE_CHOICE)
@@ -29,7 +45,11 @@ class Client(models.Model):
     ]
     status = models.CharField(max_length=128, choices=STATUS_CHOICE)
 
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    balance = models.DecimalField(max_digits=10,
+                                  decimal_places=2,
+                                  default=0,
+                                  validators=[MinValueValidator(Decimal('0.00'))]
+                                  )
     limit = models.DecimalField(max_digits=10, decimal_places=2, default=30000)
 
     department = models.CharField(max_length=128)
@@ -41,6 +61,13 @@ class Client(models.Model):
         on_delete=models.CASCADE,
         related_name='clients'
     )
+
+    def clean_fields(self, exclude=None):
+        if self.client_type == 'individuall':
+            exclude.add('department')
+        if self.client_type == 'legal':
+            exclude.add('birthday')
+
 
 
 class Payment(models.Model):
@@ -54,7 +81,6 @@ class Payment(models.Model):
         ('Sber', 'Сбер-онлайн'),
         ('SBP', 'СПБ'),
     ]
-
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)
@@ -66,22 +92,16 @@ class Payment(models.Model):
 
 
 class Expense(models.Model):
-    EXPENSE_TYPE_CHOICES = [
-        ('videonablyudenie', 'Видеонаблюдение'),
-        ('domofonia', 'Домофония'),
-        ('internet', 'Интернет'),
-        ('oborudovanie', 'Оборудование'),
-        ('programmnoe_obespechenie', 'Подписка на программное обеспечение'),
-        ('televidenie', 'Телевидение'),
-        ('telefon', 'Телефонная связь'),
-        ('hosting', 'Хостинг веб-ресурсов'),
-    ]
-
-    services = models.CharField(max_length=64, choices=EXPENSE_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)
     is_cycle = models.BooleanField(default=False)
     period = models.CharField(max_length=32, blank=True, default='1 m')
+    services = models.ForeignKey(
+        Service,
+        on_delete=models.SET_DEFAULT,
+        default='Услуга',
+        related_name='expenses',
+    )
     client = models.ForeignKey(
         Client,
         on_delete=models.CASCADE,
