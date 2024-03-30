@@ -8,12 +8,14 @@ type Props = {
   className?: string | null;
   placeholder: string;
   onClick: (text: string) => void;
+  error?: boolean;
 };
 
 function DropdownInput({
   children,
   items,
   className,
+  error,
   onClick,
   placeholder,
   ...props
@@ -29,7 +31,9 @@ function DropdownInput({
       <summary
         tabIndex={0}
         role="button"
-        className={`flex justify-start bg-gray-dropdown text-dark-gray btn `}
+        className={`flex justify-start bg-white text-dark-gray btn ${
+          error && "border border-red"
+        }`}
         {...props}
         onClick={() => setOpenMenu((prev) => !prev)}
       >

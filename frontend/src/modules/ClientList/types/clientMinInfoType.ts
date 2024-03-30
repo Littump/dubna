@@ -5,7 +5,7 @@ export default interface ClientMinInfoType {
   name: string;
   status: ClientStatus;
   type: ClientType;
-  mail: string;
+  address: string;
   phone: string;
   id: number;
 }

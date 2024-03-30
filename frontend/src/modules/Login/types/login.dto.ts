@@ -1,4 +1,4 @@
-export default interface loginDto {
-  phone: string;
+export default interface LoginDto {
+  username: string;
   password: string;
 }
