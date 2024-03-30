@@ -51,6 +51,7 @@ class Payment(models.Model):
         ('post', 'Почта России'),
         ('Sber', 'Сбер-онлайн'),
         ('SBP', 'СПБ'),
+        ('adjustment', 'Корректировка'),
     ]
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2,
@@ -78,6 +79,7 @@ class Expense(models.Model):
         ('televidenie', 'Телевидение'),
         ('telefon', 'Телефонная связь'),
         ('hosting', 'Хостинг веб-ресурсов'),
+        ('adjustment', 'Корректировка'),
     ]
     services = models.CharField(max_length=128, choices=TYPE_CHOICES)
     client = models.ForeignKey(

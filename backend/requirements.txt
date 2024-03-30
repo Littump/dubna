@@ -32,6 +32,7 @@ six==1.16.0
 social-auth-app-django==5.4.0
 social-auth-core==4.5.3
 sqlparse==0.4.4
+typing_extensions==4.10.0
 uritemplate==4.1.1
 urllib3==2.2.1
 yandexcloud==0.270.0
