@@ -1,5 +1,7 @@
+import ClientList from "@/modules/ClientList/ui";
+
 function MainPage() {
-  return <div></div>;
+  return <ClientList />;
 }
 
 export default MainPage;

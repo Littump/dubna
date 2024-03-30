@@ -1,53 +1,70 @@
-import React, { memo, ReactNode, useEffect, useRef, useState } from "react";
-import { useDetectClickOutside } from "react-detect-click-outside";
+import React, { memo, ReactNode, useEffect, useRef } from "react";
 
 interface Props {
   children: ReactNode;
-  text: string;
+  heading: ReactNode;
   className?: string;
+  isModalOpen: boolean;
+  setIsModalOpen: (val: boolean) => void;
 }
 
-const Modal = memo(({ text, children, className }: Props) => {
-  const modalRef = useRef<HTMLDialogElement | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const detectOutsideRef = useDetectClickOutside({
-    onTriggered: () => setIsModalOpen(false),
-  });
-
-  useEffect(() => {
-    const modalElement = modalRef.current;
-    if (modalElement) {
-      if (isModalOpen) {
-        modalElement.showModal();
-      } else {
-        modalElement.close();
+const Modal = memo(
+  ({ heading, children, className, isModalOpen, setIsModalOpen }: Props) => {
+    const modalRef = useRef<HTMLDialogElement | null>(null);
+    useEffect(() => {
+      const modalElement = modalRef.current;
+      if (modalElement) {
+        if (isModalOpen) {
+          modalElement.showModal();
+        } else {
+          modalElement.close();
+        }
       }
-    }
-  }, [isModalOpen]);
+    }, [isModalOpen]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
-    if (event.key === "Escape") {
-      setIsModalOpen(false);
-    }
-  };
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
+      if (event.key === "Escape") {
+        setIsModalOpen(false);
+      }
+    };
 
-  return (
-    <>
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
-      <button
-        type="button"
-        className="link"
-        onClick={() => setTimeout(() => setIsModalOpen(true), 10)}
-      >
-        {text}
-      </button>
-      <dialog ref={modalRef} className="modal" onKeyDown={handleKeyDown}>
-        <div ref={detectOutsideRef} className={`modal-box ${className}`}>
-          {children}
-        </div>
-      </dialog>
-    </>
-  );
-});
+    return (
+      <>
+        {/* Open the modal using document.getElementById('ID').showModal() method */}
+        <button
+          type="button"
+          className="btn btn-neutral bg-blue rounded-xl gap-2 py-8 w-full h-full flex justify-center items-center text-white "
+          onClick={() => setTimeout(() => setIsModalOpen(true), 10)}
+        >
+          {heading}
+        </button>
+        <dialog ref={modalRef} className="modal" onKeyDown={handleKeyDown}>
+          <div className={`modal-box ${className}`}>
+            <span
+              className="link absolute top-3 right-3 text-dark-gray"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </span>
+            {children}
+          </div>
+        </dialog>
+      </>
+    );
+  },
+);
 
 export default Modal;
