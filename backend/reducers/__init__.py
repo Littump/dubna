@@ -1,7 +1,6 @@
-from reducers.client_reducer import ClientReducer
 from reducers.base import BaseReducer
+from reducers.client_reducer import ClientReducer
 
 
-class Reducers(BaseReducer):
-    def __init__(self):
-        self.client_reducer = ClientReducer()
+class Reducers(metaclass=BaseReducer):
+    client_reducer = ClientReducer()

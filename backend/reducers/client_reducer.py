@@ -4,7 +4,7 @@ from dubna.logger import get_logger
 from api.models import Client
 
 
-class ClientReducer(BaseReducer):
+class ClientReducer(metaclass=BaseReducer):
     def __init__(self):
         self.logger = get_logger('ClientReducer')
 

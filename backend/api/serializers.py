@@ -1,20 +1,19 @@
 from rest_framework.serializers import ModelSerializer
 from api.models import Client, Department, Payment, Expense
-
 from reducers import Reducers
 
 
-class CustomModelSerializer(ModelSerializer, Reducers):
-    ...
+class CustomModelSerializer(ModelSerializer):
+    reducers = Reducers()
 
 
-class ClientSerializer(ModelSerializer):
+class ClientSerializer(CustomModelSerializer):
     class Meta:
         model = Client
         fields = "__all__"
 
 
-class DepartmentSerializer(ModelSerializer):
+class DepartmentSerializer(CustomModelSerializer):
     class Meta:
         model = Department
         fields = "__all__"
@@ -22,7 +21,7 @@ class DepartmentSerializer(ModelSerializer):
 
 class PaymentSerializer(CustomModelSerializer):
     def save(self, **kwargs):
-        self.client_reducer.update_balance(
+        self.reducers.client_reducer.update_balance(
             self.validated_data['client'],
             self.validated_data['amount']
         )
@@ -35,7 +34,7 @@ class PaymentSerializer(CustomModelSerializer):
 
 class ExpenseSerializer(CustomModelSerializer):
     def save(self, **kwargs):
-        self.client_reducer.update_balance(
+        self.reducers.client_reducer.update_balance(
             self.validated_data['client'],
             -self.validated_data['amount']
         )
