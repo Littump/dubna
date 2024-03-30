@@ -14,10 +14,10 @@ import getServiceFromRes from "@/helpers/getServiceFromRes.ts";
 import * as yup from "yup";
 
 const validationsSchema = yup.object().shape({
-  service: yup.string().required("Введите тип").min(2, "Неверно введён"),
+  debit: yup.string().required("Введите тип").min(2, "Неверно введён"),
   sum: yup.string().required("Введите сумму").min(1, "Неверно введён"),
 });
-const ServiceComponent = ({ name = "", sum = 0, id = 0 }) => {
+const DebitComponent = ({ name = "", sum = 0, id = 0 }) => {
   const { mutate, isSuccess } = useDeleteExpense(id);
   if (isSuccess) return null;
   return (
@@ -31,25 +31,24 @@ const ServiceComponent = ({ name = "", sum = 0, id = 0 }) => {
   );
 };
 interface initialValuesInterface {
-  service: "" | ResponseServiceType;
+  debit: "" | ResponseServiceType;
   sum: string;
 }
-function ClientServices() {
+function ClientDebits() {
   const { id } = useParams();
   const { data, isPending } = useGetExpenses(id ? +id : 0);
   const addExpense = useAddExpense();
   const initialValues: initialValuesInterface = {
-    service: "",
+    debit: "",
     sum: "",
   };
 
   const handleAddExpense = (body: initialValuesInterface) => {
     const data: AddExpenseDto = {
       amount: body.sum,
-      is_cycle: true,
-      period: "1 m",
-      services: getServiceToRes(body.service),
+      services: getServiceToRes(body.debit),
       client: id ? +id : 0,
+      is_cycle: false,
     };
     addExpense.mutate(data);
   };
@@ -66,8 +65,8 @@ function ClientServices() {
     "Телевидение",
   ];
 
-  const services = data?.data.filter(
-    ({ is_cycle }: { is_cycle: boolean }) => is_cycle,
+  const debits = data?.data.filter(
+    ({ is_cycle }: { is_cycle: boolean }) => !is_cycle,
   );
   if (isPending)
     return (
@@ -77,37 +76,39 @@ function ClientServices() {
     );
   return (
     <Formik
-      validationSchema={validationsSchema}
-      onSubmit={(values) => handleAddExpense(values)}
+      validationsSchema={validationsSchema}
+      onSubmit={(values) => {
+        handleAddExpense(values);
+      }}
       initialValues={initialValues}
     >
       {({ values, setFieldTouched, errors, setFieldValue, touched }) => (
         <Form className="w-7/12 min-h-full bg-white rounded-xl flex flex-col gap-4 px-6 py-4">
           <div className="flex justify-between items-center">
-            <h2 className="font-semibold text-2xl">Услуги</h2>
+            <h2 className="font-semibold text-2xl">Списания</h2>
             <details className="dropdown dropdown-end ml-auto">
               <summary className="btn border-0 btn-neutral bg-blue text-white">
-                Добавить услугу
+                Добавить списание
               </summary>
               <div className="dropdown-content  z-[1] p-2 shadow bg-base-100 rounded-box w-80 gap-4 flex flex-col ">
                 <h2 className="text-lg font-semibold">Информация</h2>
                 <DropdownInput
                   items={servicesEnum}
-                  placeholder="Сервис"
-                  error={!!(touched.service && values.service === "")}
+                  placeholder="Списания"
+                  error={!!(touched.debit && values.debit === "")}
                   onClick={(val: string) => {
-                    setFieldValue("service", val);
-                    setFieldTouched("service");
+                    setFieldTouched("debit");
+                    setFieldValue("debit", val);
                   }}
                 >
-                  {values.service === "" ? "Сервис" : values.service}
+                  {values.debit === "" ? "Списания" : values.debit}
                 </DropdownInput>
 
                 <TextInput
                   name="sum"
                   type="number"
                   placeholder="Стоимость"
-                  isError={!!(errors.sum && touched.sum)}
+                  isError={!!(values.sum === "" && touched.sum)}
                 ></TextInput>
 
                 <button
@@ -123,19 +124,20 @@ function ClientServices() {
               </div>
             </details>
           </div>
+
           <div className="flex flex-col">
             <div className="flex font-semibold py-4">
               <span className="w-5/12">Название</span>
               <span className="w-5/12">Сумма</span>
             </div>
 
-            {services.map(
+            {debits.map(
               (el: {
                 services: ResponseServiceTypeEnglish;
                 id: number;
                 amount: number;
               }) => (
-                <ServiceComponent
+                <DebitComponent
                   key={el.id + "service"}
                   name={getServiceFromRes(el?.services)}
                   id={el?.id}
@@ -150,4 +152,4 @@ function ClientServices() {
   );
 }
 
-export default ClientServices;
+export default ClientDebits;

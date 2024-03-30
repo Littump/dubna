@@ -1,5 +1,7 @@
+import Client from "@/modules/Client";
+
 function ClientPage() {
-  return <div></div>;
+  return <Client />;
 }
 
 export default ClientPage;

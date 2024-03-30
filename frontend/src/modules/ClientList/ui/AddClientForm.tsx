@@ -2,17 +2,65 @@ import SetFieldValueType from "@/modules/ClientList/types/setFieldValueType.ts";
 import TextInput from "@/ui/TextInput.tsx";
 import { FormikErrors, FormikTouched } from "formik";
 import { addClientValuesInterface } from "@/modules/ClientList/ui/AddClient.tsx";
+import DateInput from "@/ui/DateInput.tsx";
+import { useEffect } from "react";
+import DropdownInput from "@/ui/DropdownInput.tsx";
+import clientStatus from "@/modules/ClientList/types/clientStatus.ts";
 
 interface Props {
   setFieldValue: SetFieldValueType;
   isPhysical: boolean;
   touched: FormikTouched<addClientValuesInterface>;
   errors: FormikErrors<addClientValuesInterface>;
+  handleSubmit: () => void;
+  showResult: boolean;
+  isPending: boolean;
+  values: addClientValuesInterface;
+  setFieldTouched: (text: string) => void;
+  setShowResult: (res: boolean) => void;
 }
-function AddClientForm({ setFieldValue, isPhysical, errors, touched }: Props) {
+function AddClientForm({
+  setFieldValue,
+  isPhysical,
+  errors,
+  touched,
+  values,
+  handleSubmit,
+  showResult,
+  setFieldTouched,
+  isPending,
+  setShowResult,
+}: Props) {
+  useEffect(() => {
+    if (showResult) {
+      setFieldValue("step", "final");
+      setTimeout(() => setShowResult(false), 500);
+    }
+  }, [showResult]);
+
+  const statuses: clientStatus[] = [
+    "Активен",
+    "Приостановлено",
+    "Подключение",
+    "Блокировка",
+    "Расторгнут",
+  ];
+
   return (
     <div className="flex flex-col min-h-[400px]">
       <h2 className="text-2xl">Информация</h2>
+      <span className="text-sm px-1 py-2">Статус подключения</span>
+      <DropdownInput
+        placeholder="Статус"
+        items={statuses}
+        error={values.status === "" && touched.status}
+        onClick={(val) => {
+          setFieldTouched("status");
+          setFieldValue("status", val);
+        }}
+      >
+        {values.status !== "" ? values.status : "Статус"}
+      </DropdownInput>
       <TextInput
         name="name"
         isError={!!(errors.name && touched.name)}
@@ -21,14 +69,7 @@ function AddClientForm({ setFieldValue, isPhysical, errors, touched }: Props) {
           isPhysical ? "Иван Иванов Иванович" : "Название компании"
         }`}
       ></TextInput>
-      {isPhysical && (
-        <TextInput
-          name="birthday"
-          type="date"
-          isError={false}
-          label="Дата рождения"
-        ></TextInput>
-      )}
+      {isPhysical && <DateInput name="birthday" label="Дата рождения" />}
       <TextInput
         name="phone"
         label="Телефон"
@@ -36,17 +77,12 @@ function AddClientForm({ setFieldValue, isPhysical, errors, touched }: Props) {
         isError={!!(errors.phone && touched.phone)}
       ></TextInput>
       <TextInput
-        name="mail"
-        label="Почта"
-        placeholder="somemail@mail.com"
-        isError={!!(errors.mail && touched.mail)}
-      ></TextInput>
-      <TextInput
         name="address"
         label="Адрес подключения"
         placeholder="Г. Санкт-петербург улица пушкина дом 2"
         isError={!!(errors.address && touched.address)}
       ></TextInput>
+
       <div className="grid grid-cols-2 gap-2 w-full">
         <button
           type="button"
@@ -72,9 +108,9 @@ function AddClientForm({ setFieldValue, isPhysical, errors, touched }: Props) {
         <button
           type="button"
           className="btn border-0 mt-4 text-xl bg-blue text-white btn-neutral"
-          onClick={() => setFieldValue("step", "final")}
+          onClick={handleSubmit}
         >
-          Далee
+          {isPending ? <span className="loading"></span> : "Далее"}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
