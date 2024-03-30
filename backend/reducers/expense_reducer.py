@@ -8,7 +8,6 @@ from api.models import Expense, ExpenseClient
 class ExpenseReducer(metaclass=BaseReducer):
 
     def _next_payment(self, current_time, period):
-        current_time = datetime.fromtimestamp(current_time)
         period_value, period_unit = int(period.split()[0]), period.split()[1]
         if period_unit == 's':
             next_time = current_time + timedelta(seconds=period_value)

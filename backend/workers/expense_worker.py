@@ -25,7 +25,6 @@ class ExpenseWorker(threading.Thread):
                 self.reducers.client_reducer.update_balance(item.client, -item.expense.amount)
                 item.save()
 
-                self.reducers.client_reducer.update_status(item.client)
                 self.reducers.expense_reducer.add_cycle_expense(item.expense, item.client)
 
             time.sleep(5 * 60)
