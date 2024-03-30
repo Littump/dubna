@@ -1,12 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
+from django.contrib.auth import get_user_model
+from datetime import timedelta
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 
-
-class Department(models.Model):
-    name = models.CharField(max_length=128)
+User = get_user_model()
 
 
 class Service(models.Model):
@@ -54,18 +52,22 @@ class Client(models.Model):
                                   )
     limit = models.DecimalField(max_digits=10, decimal_places=2, default=30000)
 
-    department = models.ForeignKey(
-        Department,
-        on_delete=models.CASCADE,
-    )
+    department = models.CharField(max_length=128)
 
     last_update = models.DateTimeField(auto_now=True)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='clients'
+    )
 
     def clean_fields(self, exclude=None):
         if self.client_type == 'individuall':
             exclude.add('department')
         if self.client_type == 'legal':
             exclude.add('birthday')
+
 
 
 class Payment(models.Model):
@@ -92,6 +94,8 @@ class Payment(models.Model):
 class Expense(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)
+    is_cycle = models.BooleanField(default=False)
+    period = models.CharField(max_length=32, blank=True, default='1 m')
     services = models.ForeignKey(
         Service,
         on_delete=models.SET_DEFAULT,
@@ -103,3 +107,19 @@ class Expense(models.Model):
         on_delete=models.CASCADE,
         related_name='expenses'
     )
+
+
+class ExpenseClient(models.Model):
+    client = models.ForeignKey(
+        Client,
+        on_delete=models.CASCADE
+    )
+    expense = models.ForeignKey(
+        Expense,
+        on_delete=models.CASCADE
+    )
+    date = models.DateTimeField(auto_now_add=True)
+    is_paid = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('client', 'expense', 'is_paid')

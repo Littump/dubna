@@ -25,6 +25,3 @@ class ClientReducer(metaclass=BaseReducer):
             client.status = 'stopped'
 
         client.save()
-
-    def check_payment(self, client: Client):
-        ...
