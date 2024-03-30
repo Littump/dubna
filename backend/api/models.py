@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from datetime import timedelta
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 
