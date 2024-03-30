@@ -61,11 +61,11 @@ class Client(models.Model):
 
     last_update = models.DateTimeField(auto_now=True)
 
-    # def clean_fields(self, exclude=None):
-    #     if self.client_type == 'individuall':
-    #         exclude.add('department')
-    #     if self.client_type == 'legal':
-    #         exclude.add('birthday')
+    def clean_fields(self, exclude=None):
+        if self.client_type == 'individuall':
+            exclude.add('department')
+        if self.client_type == 'legal':
+            exclude.add('birthday')
 
 
 class Payment(models.Model):
