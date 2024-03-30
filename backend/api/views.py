@@ -24,7 +24,17 @@ class ClientViewSet(CustomModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(methods=['get'], detail=True)
+    def payments(self, request, pk=None):
+        payments = Payment.objects.filter(client=self.get_object())
+        serializer = PaymentSerializer(payments, many=True)
+        return Response(serializer.data)
 
+    @action(methods=['get'], detail=True)
+    def expenses(self, request, pk=None):
+        expenses = Expense.objects.filter(client=self.get_object())
+        serializer = ExpenseSerializer(expenses, many=True)
+        return Response(serializer.data)
 class PaymentViewSet(CustomModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
