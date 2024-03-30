@@ -17,10 +17,10 @@ class ExpenseWorker(threading.Thread):
 
     def _next_payment(self, current_time, period):
         current_time = datetime.fromtimestamp(current_time)
-        period_value, period_unit = int(period[:-1]), period[-1].lower()
+        period_value, period_unit = int(period.split()[0]), period.split()[1]
         if period_unit == 's':
             next_time = current_time + timedelta(seconds=period_value)
-        elif period_unit == 'm':
+        elif period_unit == 'min':
             next_time = current_time + timedelta(minutes=period_value)
         elif period_unit == 'h':
             next_time = current_time + timedelta(hours=period_value)
