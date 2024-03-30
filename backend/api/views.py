@@ -35,6 +35,8 @@ class ClientViewSet(CustomModelViewSet):
         expenses = Expense.objects.filter(client=self.get_object())
         serializer = ExpenseSerializer(expenses, many=True)
         return Response(serializer.data)
+
+
 class PaymentViewSet(CustomModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
