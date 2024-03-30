@@ -14,7 +14,7 @@ const ClientListHeader = () => {
           Тип
         </div>
         <div className="w-2/12 py-8 flex justify-center items-center text-center">
-          Почта
+          Адрес
         </div>
         <div className="w-3/12 py-8 flex justify-center items-center text-center">
           Номер телефона

@@ -33,7 +33,7 @@ const Modal = memo(
         {/* Open the modal using document.getElementById('ID').showModal() method */}
         <button
           type="button"
-          className="btn btn-neutral bg-blue rounded-xl gap-2 py-8 w-full h-full flex justify-center items-center text-white "
+          className="btn border-0  btn-neutral bg-blue rounded-xl gap-2 py-8 w-full h-full flex justify-center items-center text-white "
           onClick={() => setTimeout(() => setIsModalOpen(true), 10)}
         >
           {heading}

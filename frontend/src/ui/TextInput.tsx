@@ -33,12 +33,13 @@ function TextInput({
         {...props}
         name={name}
         className={`input input-bordered  text-md ${
-          isError ? "border-red-500" : "border-blue "
+          isError ? "border-red" : "border-blue "
         } w-full text-md`}
         placeholder={placeholder ? placeholder : label}
       />
-      <span className="prose-sm absolute -bottom-6 left-0 text-red-500 text-start">
+      <span className="prose-sm absolute -bottom-6 left-0 text-red text-start">
         {isError && error ? error : ""}
+        {isError}
       </span>
     </label>
   );

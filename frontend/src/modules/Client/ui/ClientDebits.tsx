@@ -82,7 +82,7 @@ function ClientDebits() {
       }}
       initialValues={initialValues}
     >
-      {({ values, setFieldTouched, errors, setFieldValue, touched }) => (
+      {({ values, setFieldTouched, setFieldValue, touched }) => (
         <Form className="w-7/12 min-h-full bg-white rounded-xl flex flex-col gap-4 px-6 py-4">
           <div className="flex justify-between items-center">
             <h2 className="font-semibold text-2xl">Списания</h2>
