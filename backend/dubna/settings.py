@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'api.apps.ApiConfig',
+    'geeks',
 ]
 
 MIDDLEWARE = [
