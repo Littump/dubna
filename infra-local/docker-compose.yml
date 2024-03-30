@@ -1,19 +1,19 @@
 version: "3.3"
 
 volumes:
-  pg_data:
+  # pg_data:
   static_value:
   media_value:
 
 services:
-  db:
-    image: postgres:13.3-alpine
-    restart: always
-    env_file: ../backend/.env
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+  # db:
+  #   image: postgres:13.3-alpine
+  #   restart: always
+  #   env_file: ../backend/.env
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
   backend:
     build: ../backend/
     restart: always
@@ -22,8 +22,8 @@ services:
       - static_value:/app/static/
       - media_value:/app/media/
     env_file: ../backend/.env
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
   # frontend:
   #   build:
   #     context: ../frontend/
