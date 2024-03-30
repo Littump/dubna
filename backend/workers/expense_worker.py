@@ -21,6 +21,8 @@ class ExpenseWorker(threading.Thread):
                 date__lt=int(time.time()),
             )
             for item in payments:
+                if not self.reducers.expense_reducer.valid_expense(item.client):
+                    continue
                 item.is_paid = True
                 self.reducers.client_reducer.update_balance(item.client, -item.expense.amount)
                 item.save()

@@ -17,13 +17,13 @@ class ClientReducer(metaclass=BaseReducer):
         if client.status == 'annulled':
             return
 
-        if not client.payments and not client.expenses:
-            client.status = 'connecting'
-        if (client.payments or client.expenses) and client.balance >= -client.limit:
-            client.status = 'active'
-        if (client.payments or client.expenses) and client.balance < -client.limit and client.status == 'active':
-            client.status = 'stopped'
         if (client.payments or client.expenses) and client.balance < -client.limit and client.status == 'stopped':
             client.status = 'banned'
+        elif not client.payments and not client.expenses:
+            client.status = 'connecting'
+        elif (client.payments or client.expenses) and client.balance >= -client.limit:
+            client.status = 'active'
+        elif (client.payments or client.expenses) and client.balance < -client.limit and client.status == 'active':
+            client.status = 'stopped'
 
         client.save()

@@ -3,7 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-
+from django.shortcuts import get_object_or_404
 
 from api.serializers import ClientSerializer, PaymentSerializer, ExpenseSerializer
 from dubna.logger import get_logger
@@ -53,6 +53,15 @@ class ExpenseViewSet(CustomModelViewSet):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
     http_method_names = ['get', 'post', 'delete']
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        client = get_object_or_404(Client, pk=serializer.data['client'])
+        if not self.reducers.expense_reducer.valid_expense(client):
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        serializer.save(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

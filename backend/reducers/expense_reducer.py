@@ -32,3 +32,6 @@ class ExpenseReducer(metaclass=BaseReducer):
             expense=expense,
             date=date,
         )
+
+    def valid_expense(self, client):
+        return client.status not in ['banned', 'annuled']
