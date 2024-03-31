@@ -91,7 +91,7 @@ function ClientInfo() {
     if (!updateClient.isPending && updateClient.isSuccess) {
       refetch();
     }
-  }, [updateClient, isError, isPending]);
+  }, [updateClient.isSuccess, updateClient.isPending, isError, isPending]);
 
   const user: ClientInfoType = {
     id: data?.data.id,
@@ -162,8 +162,8 @@ function ClientInfo() {
   return (
     <Formik
       onSubmit={(values) => handleEdit(values)}
-      validationSchema={validationsSchema}
       initialValues={initialValues}
+      validationsSchema={validationsSchema}
     >
       {({ values, setFieldTouched, setFieldValue, errors, touched }) => (
         <Form className="w-7/12 min-h-full bg-white rounded-xl flex gap-10 px-6 py-6">
