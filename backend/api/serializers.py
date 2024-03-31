@@ -59,7 +59,7 @@ class ExpenseSerializer(CustomModelSerializer):
             self.reducers.expense_reducer.add_cycle_expense(
                 instance,
                 self.validated_data['client'],
-                instance.dat
+                instance.date
             )
         ExpenseClient.objects.create(
             client=self.validated_data['client'],
