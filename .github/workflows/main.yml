@@ -41,7 +41,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/frontend_...:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/frontend_dubna:latest
 
       - name: Push python backend file docker to docker hub
         uses: docker/build-push-action@v4
@@ -49,7 +49,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backend_...:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/backend_dubna:latest
 
   deploy:
     name: Deploy image
@@ -67,8 +67,8 @@ jobs:
             sudo docker compose pull
             sudo docker compose down
             sudo docker compose up -d
-            sudo docker exec site-backend-1 python manage.py makemigrations
-            sudo docker exec site-backend-1 python manage.py migrate
+#            sudo docker exec site-backend-1 python manage.py makemigrations
+#            sudo docker exec site-backend-1 python manage.py migrate
 
   send_message_telegram:
     name: message in tg
@@ -80,4 +80,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: Деплой valuation успешно выполнен!
+          message: Деплой dubna успешно выполнен!

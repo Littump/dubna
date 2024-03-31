@@ -15,7 +15,7 @@ services:
     ports:
       - "5432:5432"
   backend:
-    image: littump/backend_...:latest
+    image: littump/backend_dubna:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -25,7 +25,7 @@ services:
       - db
   frontend:
     restart: no
-    image: littump/frontend_...:latest
+    image: littump/frontend_dubna:latest
     volumes:
       - ../frontend/:/app/result_build/
     env_file: ../frontend/.env

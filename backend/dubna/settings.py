@@ -50,7 +50,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:80",
     "http://127.0.0.1:8080",
     "https://dubna24.ru:80",
-    "https://dubna24.ru:8080"
+    "https://dubna24.ru:8080",
+    "htpp://0.0.0.0:9999",
 ]
 
 ROOT_URLCONF = 'dubna.urls'
