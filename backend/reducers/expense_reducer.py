@@ -18,7 +18,7 @@ class ExpenseReducer(metaclass=BaseReducer):
         elif period_unit == 'd':
             next_time = current_time + timedelta(days=period_value)
         elif period_unit == 'm':
-            next_time = (current_time.replace(day=1) + timedelta(days=31)).replace(day=current_time.day)
+            next_time = (current_time.replace(day=1) + timedelta(days=31)).replace(day=30)
             next_time += timedelta(days=period_value*30)
         elif period_unit == 'y':
             next_time = current_time.replace(year=current_time.year + period_value)
