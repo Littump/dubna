@@ -7,4 +7,4 @@ class ApiConfig(AppConfig):
 
     def ready(self) -> None:
         from workers.expense_worker import ExpenseWorker
-        w = ExpenseWorker()
+        worker = ExpenseWorker() # noqa : F841

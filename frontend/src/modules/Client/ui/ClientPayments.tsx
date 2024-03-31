@@ -13,7 +13,7 @@ import { useDeletePayment } from "@/modules/Client/api/useDeletePayment.ts";
 import getPaymentTypeFromRes from "@/helpers/getPaymentTypeFromRes.ts";
 import * as yup from "yup";
 
-const validationsSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
   paymentType: yup.string().required("Введите тип").min(2, "Неверно введён"),
   sum: yup.string().required("Введите сумму").min(1, "Неверно введён"),
 });
@@ -74,8 +74,8 @@ function ClientServices() {
     );
   return (
     <Formik
-      validationsSchema={validationsSchema}
-      onSubmit={() => {}}
+      validationsSchema={validationSchema}
+      onSubmit={(values) => handleAddPayment(values)}
       initialValues={initialValues}
     >
       {({ values, setFieldTouched, setFieldValue, touched }) => (
@@ -110,11 +110,8 @@ function ClientServices() {
                 ></TextInput>
 
                 <button
-                  type="button"
+                  type="submit"
                   className="btn border-0 mt-4 text-xl bg-blue text-white btn-neutral"
-                  onClick={() => {
-                    handleAddPayment(values);
-                  }}
                 >
                   {addPayment.isPending ? (
                     <span className="loading"></span>
@@ -125,12 +122,19 @@ function ClientServices() {
               </div>
             </details>
           </div>
+
           <div className="flex flex-col">
-            <div className="flex font-semibold py-4">
-              <span className="w-4/12">Тип</span>
-              <span className="w-3/12">Сумма</span>
-              <span className="w-3/12">Дата</span>
-            </div>
+            {services?.length === 0 || !services ? (
+              <div className="mx-auto text-dark-gray mt-36">
+                Добавьте платёж
+              </div>
+            ) : (
+              <div className="flex font-semibold py-4">
+                <span className="w-4/12">Тип</span>
+                <span className="w-3/12">Сумма</span>
+                <span className="w-3/12">Дата</span>
+              </div>
+            )}
 
             {services.map(
               (el: {

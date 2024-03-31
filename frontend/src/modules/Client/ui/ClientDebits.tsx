@@ -126,10 +126,16 @@ function ClientDebits() {
           </div>
 
           <div className="flex flex-col">
-            <div className="flex font-semibold py-4">
-              <span className="w-5/12">Название</span>
-              <span className="w-5/12">Сумма</span>
-            </div>
+            {debits?.length === 0 || !debits ? (
+              <div className="mx-auto text-dark-gray mt-36">
+                Добавьте списание
+              </div>
+            ) : (
+              <div className="flex font-semibold py-4">
+                <span className="w-5/12">Название</span>
+                <span className="w-5/12">Сумма</span>
+              </div>
+            )}
 
             {debits.map(
               (el: {

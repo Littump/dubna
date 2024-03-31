@@ -34,7 +34,9 @@ function AddClientChooseType({ values, setFieldValue }: Props) {
       <button
         type="button"
         className="btn border-0 mt-4 text-xl bg-blue text-white btn-neutral"
-        onClick={() => setFieldValue("step", "form")}
+        onClick={() => {
+          if (values.type !== "") setFieldValue("step", "form");
+        }}
       >
         Далee
         <svg

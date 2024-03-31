@@ -7,14 +7,14 @@ import DateInput from "@/ui/DateInput.tsx";
 import getColorByStatus from "@/helpers/getColorByStatus.ts";
 import { useGetClientInfo } from "@/modules/Client/api/useGetClientInfo.ts";
 import getStatusFromRes from "@/helpers/getStatusFromRes.ts";
-import { useAddClient } from "@/modules/Client/api/useUpdateClientInfo.ts";
+import { useUpdateClient } from "@/modules/Client/api/useUpdateClientInfo.ts";
 import AddClientDto from "@/modules/ClientList/types/addClient.dto.ts";
-import getStatusToRes from "@/helpers/getStatusToRes.ts";
 import getBirthdayFromDate from "@/helpers/getBirthdayFromDate.ts";
 import DropdownInput from "@/ui/DropdownInput.tsx";
 import clientStatus from "@/modules/ClientList/types/clientStatus.ts";
 import clientType from "@/modules/ClientList/types/clientType.ts";
 import * as yup from "yup";
+import AlertComponent from "@/ui/AlertComponent.tsx";
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -66,7 +66,7 @@ const InputOrText = ({
   );
 };
 interface ClientInfoValues {
-  status: clientStatus;
+  status: clientStatus | "";
   type: clientType | "";
   phone: string;
   name: string;
@@ -77,13 +77,22 @@ interface ClientInfoValues {
 function ClientInfo() {
   const [isEditable, setIsEditable] = useState(false);
   const { id } = useParams();
-  const { data, isPending, isError } = useGetClientInfo(id ? +id : 0);
-  const { mutate } = useAddClient(id ? +id : 0);
+  const { data, refetch, isPending, isError } = useGetClientInfo(id ? +id : 0);
+  const updateClient = useUpdateClient(id ? +id : 0);
   const navigate = useNavigate();
+  const [alertIsShowing, setAlertIsShowing] = useState(false);
 
   useEffect(() => {
     if (isError && !isPending) navigate("/");
-  }, [isError, isPending]);
+    if (!updateClient.isPending && updateClient.isError) {
+      setAlertIsShowing(true);
+      setTimeout(() => setAlertIsShowing(false), 5000);
+    }
+    if (!updateClient.isPending && updateClient.isSuccess) {
+      refetch();
+    }
+  }, [updateClient, isError, isPending]);
+
   const user: ClientInfoType = {
     id: data?.data.id,
     balance: +data?.data.balance,
@@ -121,7 +130,6 @@ function ClientInfo() {
           birthday: getBirthdayFromDate(body.birthday as Date),
           client_type: "individual",
           phone: body.phone,
-          status: getStatusToRes(body.status),
           connection_address: body.address,
           name: body.name,
         };
@@ -129,15 +137,21 @@ function ClientInfo() {
         data = {
           client_type: "legal",
           phone: body.phone,
-          status: getStatusToRes(body.status),
           connection_address: body.address,
           name: body.name,
         };
       }
-      mutate(data);
+      updateClient.mutate(data);
       setIsEditable(false);
     }
   };
+  const statuses: clientStatus[] = [
+    "Активен",
+    "Приостановлено",
+    "Подключение",
+    "Блокировка",
+    "Расторгнут",
+  ];
 
   if (isPending)
     return (
@@ -147,7 +161,7 @@ function ClientInfo() {
     );
   return (
     <Formik
-      onSubmit={() => {}}
+      onSubmit={(values) => handleEdit(values)}
       validationSchema={validationsSchema}
       initialValues={initialValues}
     >
@@ -183,6 +197,29 @@ function ClientInfo() {
                 )}
               </div>
             </div>
+            <div className="flex items-center">
+              <div className="w-5/12 font-semibold">Статус:</div>
+              <div className={`w-7/12 h-12 flex items-center `}>
+                {isEditable ? (
+                  <DropdownInput
+                    placeholder="Статус"
+                    items={statuses}
+                    className="w-full"
+                    error={values.status === "" && touched.status}
+                    onClick={(val) => {
+                      setFieldTouched("status");
+                      setFieldValue("status", val);
+                    }}
+                  >
+                    {values.status !== "" ? values.status : "Статус"}
+                  </DropdownInput>
+                ) : (
+                  <span className={`px-4 ${getColorByStatus(user.status)}`}>
+                    {user.status}
+                  </span>
+                )}
+              </div>
+            </div>
             {values.type === "Физ. лицо" && (
               <div className="flex items-center">
                 <div className="w-5/12 font-semibold">День рождения:</div>
@@ -193,9 +230,9 @@ function ClientInfo() {
                     <span className="px-4">{`${
                       values.birthday &&
                       values.birthday.getDate() +
-                        "\\" +
+                        "." +
                         (values.birthday.getMonth() + 1) +
-                        "\\" +
+                        "." +
                         values.birthday.getFullYear()
                     }`}</span>
                   )}
@@ -216,20 +253,9 @@ function ClientInfo() {
               text={values.phone}
               isError={!!(errors.phone && touched.phone)}
             />
-            <div className="flex items-center">
-              <div className="w-5/12 font-semibold">Статус:</div>
-              <div
-                className={`w-7/12 h-12 flex items-center px-4  ${getColorByStatus(
-                  user.status,
-                )}`}
-              >
-                {user.status}
-              </div>
-            </div>
             <button
-              type="button"
+              type="submit"
               className="btn  border-0 btn-neutral bg-blue text-white"
-              onClick={() => handleEdit(values)}
             >
               {isEditable ? "Сохранить" : "Редактировать"}
             </button>
@@ -244,6 +270,16 @@ function ClientInfo() {
               {user.limit}
             </span>
           </div>
+          {updateClient.isError ? (
+            <AlertComponent className={`alert-error`} active={alertIsShowing}>
+              <>
+                <h2 className="prose-md font-bold">
+                  Не удалось обновить информацию!
+                </h2>
+                <p className="prose-sm">{`Проверьте введённые данные ещё раз`}</p>
+              </>
+            </AlertComponent>
+          ) : null}
         </Form>
       )}
     </Formik>

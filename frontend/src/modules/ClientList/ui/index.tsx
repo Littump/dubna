@@ -9,6 +9,7 @@ import { useGetClients } from "@/modules/ClientList/api/useGetClients.ts";
 
 import ClientResponseType from "@/modules/ClientList/types/clientInfoType.ts";
 import getStatusFromRes from "@/helpers/getStatusFromRes.ts";
+import { ClientInfoTypeEnglish } from "@/modules/Client/types/clientInfoType.ts";
 
 export interface FiltersInitialValues {
   searchInput: string;
@@ -17,8 +18,49 @@ export interface FiltersInitialValues {
 }
 
 const ClientList = () => {
-  const { data } = useGetClients();
+  const { data, refetch } = useGetClients();
+  console.log(data);
+  const clients: ClientInfoTypeEnglish[] = data?.data;
+  const summaryData = {
+    all: clients?.length | 0,
+    legal: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.client_type === "legal"),
+      0,
+    ),
+    individual: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.client_type === "individual"),
+      0,
+    ),
+    statusActive: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.status === "active"),
+      0,
+    ),
+    statusAnnulled: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.status === "annulled"),
+      0,
+    ),
+    statusBanned: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.status === "banned"),
+      0,
+    ),
+    statusConnecting: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.status === "connecting"),
+      0,
+    ),
+    statusStopped: clients?.reduce(
+      (accumulator: number, currentValue) =>
+        accumulator + +(currentValue.status === "stopped"),
+      0,
+    ),
+  };
 
+  console.log(summaryData);
   const clientList: ClientMinInfoType[] = data?.data.map(
     (el: ClientResponseType) => ({
       name: el.name,
@@ -41,9 +83,13 @@ const ClientList = () => {
       {({ values, setFieldValue }) => (
         <div className="w-full flex flex-col gap-8">
           <Form>
-            <ClientFilters setFieldValue={setFieldValue} values={values} />
+            <ClientFilters
+              summaryData={summaryData}
+              setFieldValue={setFieldValue}
+              values={values}
+            />
           </Form>
-          <ClientListHeader />
+          <ClientListHeader refetch={refetch} />
           <ClientsTable
             list={
               clientList &&
@@ -64,6 +110,9 @@ const ClientList = () => {
                         .toLowerCase()
                         .indexOf(values.searchInput.toLowerCase()) !== -1 ||
                       el.address
+                        .toLowerCase()
+                        .indexOf(values.searchInput.toLowerCase()) !== -1 ||
+                      el.phone
                         .toLowerCase()
                         .indexOf(values.searchInput.toLowerCase()) !== -1
                     );

@@ -1,7 +1,9 @@
+from decimal import Decimal
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
-from decimal import Decimal
+
 
 User = get_user_model()
 
@@ -25,12 +27,16 @@ class Client(models.Model):
         ('annulled', 'рассторгнут'),
         ('stopped', 'приостановлено'),
     ]
-    status = models.CharField(max_length=128, choices=STATUS_CHOICE)
+    status = models.CharField(max_length=128,
+                              choices=STATUS_CHOICE,
+                              default='connecting',
+                              blank=True
+                              )
 
     balance = models.DecimalField(max_digits=10,
                                   decimal_places=2,
                                   default=0)
-    limit = models.DecimalField(max_digits=10, decimal_places=2, default=30000)
+    limit = models.DecimalField(max_digits=10, decimal_places=2, default=500)
 
     last_update = models.DateTimeField(auto_now=True)
 
@@ -39,6 +45,9 @@ class Client(models.Model):
         on_delete=models.CASCADE,
         related_name='clients'
     )
+
+    def __str__(self) -> str:
+        return f'{self.name}, {self.phone}, {self.id}'
 
 
 class Payment(models.Model):
@@ -54,19 +63,28 @@ class Payment(models.Model):
         ('adjustment', 'Корректировка'),
     ]
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
-    amount = models.DecimalField(max_digits=10, decimal_places=2,
-                                 validators=[MinValueValidator(Decimal('0.00'))])
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
     date = models.DateTimeField(auto_now_add=True)
     client = models.ForeignKey(
         Client,
         on_delete=models.CASCADE,
         related_name='payments'
     )
+    
+    def __str__(self) -> str:
+        return f'{self.type}, {self.amount}, {self.date}, {self.id}'
 
 
 class Expense(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2,
-                                 validators=[MinValueValidator(Decimal('0.00'))])
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
     date = models.DateTimeField(auto_now_add=True)
     is_cycle = models.BooleanField(default=False)
     period = models.CharField(max_length=32, blank=True, default='1 m')
@@ -87,6 +105,9 @@ class Expense(models.Model):
         on_delete=models.CASCADE,
         related_name='expenses'
     )
+    
+    def __str__(self) -> str:
+        return f'{self.services}, {self.amount}, {self.date}, {self.id}'
 
 
 class ExpenseClient(models.Model):
@@ -108,3 +129,6 @@ class ExpenseClient(models.Model):
                 name='Рецепт содержит каждый ингредиент только один раз',
             )
         ]
+
+    def __str__(self) -> str:
+        return f'{self.client}, {self.expense}, {self.date}'
