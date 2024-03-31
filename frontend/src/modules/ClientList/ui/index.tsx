@@ -17,7 +17,7 @@ export interface FiltersInitialValues {
 }
 
 const ClientList = () => {
-  const { data } = useGetClients();
+  const { data, refetch } = useGetClients();
 
   const clientList: ClientMinInfoType[] = data?.data.map(
     (el: ClientResponseType) => ({
@@ -43,7 +43,7 @@ const ClientList = () => {
           <Form>
             <ClientFilters setFieldValue={setFieldValue} values={values} />
           </Form>
-          <ClientListHeader />
+          <ClientListHeader refetch={refetch} />
           <ClientsTable
             list={
               clientList &&
