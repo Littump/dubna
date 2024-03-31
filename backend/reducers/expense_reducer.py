@@ -1,8 +1,8 @@
 from datetime import timedelta
 
-from reducers.base import BaseReducer
-from dubna.logger import get_logger
 from api.models import ExpenseClient
+from dubna.logger import get_logger
+from reducers.base import BaseReducer
 
 
 class ExpenseReducer(metaclass=BaseReducer):

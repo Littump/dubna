@@ -1,6 +1,6 @@
-from reducers.base import BaseReducer
-from dubna.logger import get_logger
 from api.models import Client
+from dubna.logger import get_logger
+from reducers.base import BaseReducer
 
 
 class ClientReducer(metaclass=BaseReducer):

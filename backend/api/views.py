@@ -1,16 +1,17 @@
-from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+import csv
+
+from api.models import Client, Expense, Payment
+from api.serializers import (ClientSerializer, ExpenseSerializer,
+                             PaymentSerializer)
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
-from api.serializers import ClientSerializer, PaymentSerializer, ExpenseSerializer, StatsSerializer # noqa : F408
 from dubna.logger import get_logger
-from api.models import Client, Payment, Expense
 from reducers import Reducers
-
-from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 
 class CustomModelViewSet(ModelViewSet):
@@ -40,6 +41,23 @@ class ClientViewSet(CustomModelViewSet):
         expenses = Expense.objects.filter(client=self.get_object())
         serializer = ExpenseSerializer(expenses, many=True)
         return Response(serializer.data)
+
+    @action(methods=['get'], detail=False)
+    def stats(request):
+        clients = Client.objects.all()
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="clients.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Имя', 'Адрес',
+                         'Тип', 'Телефон', 'День рождения',
+                         'Статус', 'Баланс', 'Лимит'])
+
+        for client in clients:
+            writer.writerow([client.name, client.connection_address,
+                            client.client_type, client.phone, client.birthday,
+                            client.status, client.balance, client.limit])
+
+        return response
 
 
 class PaymentViewSet(CustomModelViewSet):
@@ -90,9 +108,5 @@ class ExpenseViewSet(CustomModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['POST'])
-def stats(request):
-    serializer = StatsSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    clients = Client.objects.all()
-    ...
+# @swagger_auto_schema(method='post', request_body=StatsSerializer)
+
