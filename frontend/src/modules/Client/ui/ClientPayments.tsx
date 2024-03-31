@@ -54,7 +54,6 @@ function ClientServices() {
   };
 
   const paymentsEnum: PaymentType[] = [
-    "Корректировка",
     "QR-код",
     "Автоплатеж",
     "Банковский платеж",
