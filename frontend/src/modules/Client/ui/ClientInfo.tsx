@@ -78,7 +78,7 @@ interface ClientInfoValues {
 function ClientInfo() {
   const [isEditable, setIsEditable] = useState(false);
   const { id } = useParams();
-  const { data, isPending, isError } = useGetClientInfo(id ? +id : 0);
+  const { data, refetch, isPending, isError } = useGetClientInfo(id ? +id : 0);
   const updateClient = useUpdateClient(id ? +id : 0);
   const navigate = useNavigate();
   const [alertIsShowing, setAlertIsShowing] = useState(false);
@@ -88,6 +88,9 @@ function ClientInfo() {
     if (!updateClient.isPending && updateClient.isError) {
       setAlertIsShowing(true);
       setTimeout(() => setAlertIsShowing(false), 5000);
+    }
+    if (!updateClient.isPending && updateClient.isSuccess) {
+      refetch();
     }
   }, [updateClient, isError, isPending]);
 
@@ -128,7 +131,6 @@ function ClientInfo() {
           birthday: getBirthdayFromDate(body.birthday as Date),
           client_type: "individual",
           phone: body.phone,
-          status: getStatusToRes(body.status),
           connection_address: body.address,
           name: body.name,
         };
@@ -136,7 +138,6 @@ function ClientInfo() {
         data = {
           client_type: "legal",
           phone: body.phone,
-          status: getStatusToRes(body.status),
           connection_address: body.address,
           name: body.name,
         };

@@ -5,5 +5,4 @@ export const useGetClientInfo = (id: number) =>
   useQuery({
     queryKey: ["getClient" + id],
     queryFn: () => clientService.getClient(id),
-    refetchInterval: 2000,
   });
