@@ -15,7 +15,7 @@ class ClientSerializer(CustomModelSerializer):
         if not value:
             return value
 
-        now = datetime.now()
+        now = datetime.now().date()
         now_18year = now.replace(year=now.year - 18)
         if value > now_18year:
             raise ValueError('Client must be at least 18 years old')
