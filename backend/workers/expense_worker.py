@@ -1,7 +1,7 @@
 import threading
 import time
 
-from api.models import ExpenseClient
+from api.models import ExpenseClient, Expense
 from reducers import Reducers
 from reducers.base import BaseReducer
 
@@ -28,6 +28,14 @@ class ExpenseWorker(threading.Thread, metaclass=BaseReducer):
                 if not self.reducers.expense_reducer.valid_expense(item.client):
                     continue
                 item.is_paid = True
+
+                Expense.objects.create(
+                    amount=item.expense.amount,
+                    client=item.client,
+                    services=item.expense.services,
+                    date=item.date,
+                )
+
                 self.reducers.client_reducer.update_balance(item.client, -item.expense.amount)
                 item.save()
 
