@@ -23,7 +23,7 @@ class ClientReducer(metaclass=BaseReducer):
             client.status = 'connecting'
         elif (client.payments or client.expenses) and client.balance >= -client.limit:
             client.status = 'active'
-        elif (client.payments or client.expenses) and client.balance < -client.limit and client.status == 'active':
+        elif (client.payments or client.expenses) and client.balance < -client.limit and (client.status in ('active', 'connecting')):
             client.status = 'stopped'
 
         client.save()
