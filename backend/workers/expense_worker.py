@@ -3,15 +3,19 @@ import time
 
 from api.models import ExpenseClient
 from reducers import Reducers
+from reducers.base import BaseReducer
+
+from datetime import datetime
 
 
-class ExpenseWorker(threading.Thread):
-    def init(self):
-        super(ExpenseWorker, self).init()
+class ExpenseWorker(threading.Thread, metaclass=BaseReducer):
+    def __init__(self):
+        super().__init__()
         self.reducers = Reducers()
         self.start_time = time.time()
         self.lock = threading.Lock()
         self.running = True
+        print('PRED START')
         self.start()
 
     def run(self):
@@ -27,6 +31,6 @@ class ExpenseWorker(threading.Thread):
                 self.reducers.client_reducer.update_balance(item.client, -item.expense.amount)
                 item.save()
 
-                self.reducers.expense_reducer.add_cycle_expense(item.expense, item.client)
+                self.reducers.expense_reducer.add_cycle_expense(item.expense, item.client, datetime.fromtimestamp(item.date))
 
-            time.sleep(5 * 60)
+            time.sleep(5)

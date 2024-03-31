@@ -102,4 +102,9 @@ class ExpenseClient(models.Model):
     is_paid = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('client', 'expense', 'date')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['client', 'expense', 'date'],
+                name='Рецепт содержит каждый ингредиент только один раз',
+            )
+        ]

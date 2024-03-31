@@ -57,10 +57,10 @@ class ExpenseViewSet(CustomModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        client = get_object_or_404(Client, pk=serializer.data['client'])
+        client = get_object_or_404(Client, pk=serializer.validated_data['client'].id)
         if not self.reducers.expense_reducer.valid_expense(client):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        serializer.save(serializer)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):

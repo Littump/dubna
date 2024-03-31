@@ -23,10 +23,10 @@ class ExpenseReducer(metaclass=BaseReducer):
         elif period_unit == 'y':
             next_time = current_time.replace(year=current_time.year + period_value)
 
-        return int(next_time.timestamp())
+        return int(next_time.timestamp())   
 
-    def add_cycle_expense(self, expense, client):
-        date = self._next_payment(expense.date, expense.period)
+    def add_cycle_expense(self, expense, client, date):
+        date = self._next_payment(date, expense.period)
         ExpenseClient.objects.create(
             client=client,
             expense=expense,

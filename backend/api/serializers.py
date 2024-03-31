@@ -35,12 +35,12 @@ class ExpenseSerializer(CustomModelSerializer):
         )
         instance = super().save(**kwargs)
         if self.validated_data['is_cycle']:
-            self.reducers.expense_reducer.add_cycle_expense(instance, self.validated_data['client'])
+            self.reducers.expense_reducer.add_cycle_expense(instance, self.validated_data['client'], instance.date)
         ExpenseClient.objects.create(
             client=self.validated_data['client'],
             expense=instance,
             is_paid=True,
-            date=int(time.time()),
+            date=int(instance.date.timestamp()),
         )
         return instance
 
