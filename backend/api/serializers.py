@@ -1,9 +1,10 @@
+from datetime import datetime
+
 from rest_framework.serializers import ModelSerializer
+
 from api.models import Client, Payment, Expense, ExpenseClient
 from reducers import Reducers
-import time
 
-from datetime import datetime
 
 class CustomModelSerializer(ModelSerializer):
     reducers = Reducers()
@@ -47,7 +48,11 @@ class ExpenseSerializer(CustomModelSerializer):
         )
         instance = super().save(**kwargs)
         if self.validated_data['is_cycle']:
-            self.reducers.expense_reducer.add_cycle_expense(instance, self.validated_data['client'], instance.date)
+            self.reducers.expense_reducer.add_cycle_expense(
+                instance,
+                self.validated_data['client'],
+                instance.dat
+            )
         ExpenseClient.objects.create(
             client=self.validated_data['client'],
             expense=instance,

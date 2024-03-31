@@ -39,14 +39,19 @@ class Logger(threading.Thread):
         self.name = name
         self.resource = {"type": str(os.uname()[1]), "id": str(os.getpid())}
         self.group = log_group_id
-        self.service = yandexcloud.SDK(**credentials).client(LogIngestionServiceStub)
+        self.service = yandexcloud.SDK(**credentials).client(
+            LogIngestionServiceStub
+        )
         self.start()
 
     def run(self):
         while self.running:
             time_elapsed = time.time() - self.start_time
             with self.lock:
-                if len(self.entries) >= 5 or (time_elapsed >= 10 and len(self.entries) > 0):
+                if (
+                    len(self.entries) >= 5 or
+                    (time_elapsed >= 10 and len(self.entries) > 0)
+                ):
                     self._process()
                     self.entries = []
                     self.start_time = time.time()
