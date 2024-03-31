@@ -5,10 +5,12 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 
-from api.serializers import ClientSerializer, PaymentSerializer, ExpenseSerializer # noqa : F408
+from api.serializers import ClientSerializer, PaymentSerializer, ExpenseSerializer, StatsSerializer # noqa : F408
 from dubna.logger import get_logger
 from api.models import Client, Payment, Expense
 from reducers import Reducers
+
+from rest_framework.decorators import api_view
 
 
 class CustomModelViewSet(ModelViewSet):
@@ -86,3 +88,10 @@ class ExpenseViewSet(CustomModelViewSet):
                                                     instance.amount)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def stats(request):
+    serializer = StatsSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response(serializer.data)

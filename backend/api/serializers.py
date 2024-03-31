@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer, CharField
 
 from api.models import Client, Payment, Expense, ExpenseClient
 from reducers import Reducers
@@ -73,3 +73,7 @@ class ExpenseSerializer(CustomModelSerializer):
     class Meta:
         model = Expense
         fields = "__all__"
+
+
+class StatsSerializer(Serializer):
+    period = CharField(max_length=32)
