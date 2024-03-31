@@ -4,8 +4,6 @@ import ClientStatus from "@/modules/ClientList/types/clientStatus.ts";
 import ClientType from "@/modules/ClientList/types/clientType.ts";
 import { FiltersInitialValues } from "@/modules/ClientList/ui/index.tsx";
 import downloadCSV from "@/modules/Client/api/downloadCsvService.ts";
-import PeriodType from "@/modules/Client/types/periodType.ts";
-
 interface Props {
   setFieldValue: (name: string, value: string) => void;
   values: FiltersInitialValues;
@@ -20,12 +18,7 @@ interface Props {
     statusConnecting: number;
   };
 }
-const getPeriod = (period: string): PeriodType => {
-  if (period === "За год") return "1 y";
-  if (period === "За месяц") return "1 m";
-  if (period === "За неделю") return "7 d";
-  return "1 d";
-};
+
 function ClientFilters({ values, setFieldValue, summaryData }: Props) {
   const statuses: ClientStatus[] = [
     "Приостановлено",
@@ -34,7 +27,6 @@ function ClientFilters({ values, setFieldValue, summaryData }: Props) {
     "Подключение",
     "Расторгнут",
   ];
-  const downloadTables = ["За год", "За месяц", "За неделю", "За день"];
   const types: ClientType[] = ["Физ. лицо", "Юр. лицо"];
 
   return (
@@ -62,15 +54,12 @@ function ClientFilters({ values, setFieldValue, summaryData }: Props) {
         >
           {values.type !== "" ? values.type : "Тип клиента"}
         </DropdownInput>
-        <DropdownInput
-          onClick={(val) => downloadCSV(getPeriod(val))}
-          placeholder="Не выбран"
-          items={downloadTables}
-          dontShowTriangle={true}
-          className="w-40"
+        <button
+          onClick={() => downloadCSV()}
+          className="w-40 btn bg-white text-dark-gray"
         >
           Скачать таблицу
-        </DropdownInput>
+        </button>
 
         <details className="dropdown dropdown-end">
           <summary className="m-1 btn w-44 bg-white text-dark-gray">

@@ -7,6 +7,7 @@ import YupPassword from "yup-password";
 import { useLogin } from "@/modules/Login/api/useLogin.ts";
 import { useEffect, useState } from "react";
 import AlertComponent from "@/ui/AlertComponent.tsx";
+import loginService from "@/modules/Login/api/loginService.ts";
 YupPassword(yup);
 
 const phoneRegExp =
@@ -26,12 +27,12 @@ const validationsSchema = yup.object().shape({
     .min(8, "Слишком простой")
     .minNumbers(1, "Добавьте 1 цифру"),
 });
+loginService.registration();
 const LoginForm = () => {
   const initialValues: loginDto = {
-    username: "89001112233",
-    password: "1q2w3e4r5t%",
+    username: "89996665544",
+    password: "13qwerty13",
   };
-
   const navigate = useNavigate();
   const { data, isError, isPending, mutate } = useLogin();
   const [alertIsShowing, setAlertIsShowing] = useState(false);
