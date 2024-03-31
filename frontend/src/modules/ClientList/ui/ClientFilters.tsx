@@ -3,7 +3,7 @@ import DropdownInput from "@/ui/DropdownInput.tsx";
 import ClientStatus from "@/modules/ClientList/types/clientStatus.ts";
 import ClientType from "@/modules/ClientList/types/clientType.ts";
 import { FiltersInitialValues } from "@/modules/ClientList/ui/index.tsx";
-import downloadCSV from "@/modules/Client/api/downloadCsvService.ts";
+import { downloadCSV } from "@/modules/ClientList/api/downloadCsvService.ts";
 interface Props {
   setFieldValue: (name: string, value: string) => void;
   values: FiltersInitialValues;
@@ -55,6 +55,7 @@ function ClientFilters({ values, setFieldValue, summaryData }: Props) {
           {values.type !== "" ? values.type : "Тип клиента"}
         </DropdownInput>
         <button
+          type="button"
           onClick={() => downloadCSV()}
           className="w-40 btn bg-white text-dark-gray"
         >
