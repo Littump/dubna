@@ -9,7 +9,7 @@ services:
   db:
     image: postgres:13.3-alpine
     restart: always
-    env_file: ../backend/.env
+    env_file: ./.env
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
@@ -20,7 +20,7 @@ services:
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
-    env_file: ../backend/.env
+    env_file: ./.env
     depends_on:
       - db
   frontend:
@@ -28,7 +28,6 @@ services:
     image: littump/frontend_dubna:latest
     volumes:
       - ../frontend/:/app/result_build/
-    env_file: ../frontend/.env
     depends_on:
       - backend
   nginx:
