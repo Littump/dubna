@@ -25,7 +25,7 @@ class Client(models.Model):
         ('annulled', 'рассторгнут'),
         ('stopped', 'приостановлено'),
     ]
-    status = models.CharField(max_length=128, choices=STATUS_CHOICE)
+    status = models.CharField(max_length=128, choices=STATUS_CHOICE, default='connecting', blank=True)
 
     balance = models.DecimalField(max_digits=10,
                                   decimal_places=2,
