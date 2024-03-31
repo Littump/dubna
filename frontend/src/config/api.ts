@@ -1,2 +1,2 @@
-const API_URL = "http://localhost/api/";
+const API_URL = "https://dubna24.ru/api/";
 export default API_URL;
