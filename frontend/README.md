@@ -1,4 +1,4 @@
-# Estate valuation
+# dubna
 
 Front-end приложение биллинговой системы.
 Разработано для участия в ХАКАТОНЕ DubnaTECH.
