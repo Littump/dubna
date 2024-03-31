@@ -65,6 +65,9 @@ const ClientList = () => {
                         .indexOf(values.searchInput.toLowerCase()) !== -1 ||
                       el.address
                         .toLowerCase()
+                        .indexOf(values.searchInput.toLowerCase()) !== -1 ||
+                      el.phone
+                        .toLowerCase()
                         .indexOf(values.searchInput.toLowerCase()) !== -1
                     );
                 })

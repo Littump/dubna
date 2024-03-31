@@ -11,6 +11,7 @@ import clientStatus from "@/modules/ClientList/types/clientStatus.ts";
 import getStatusToRes from "@/helpers/getStatusToRes.ts";
 import getBirthdayFromDate from "@/helpers/getBirthdayFromDate.ts";
 import * as yup from "yup";
+import AlertComponent from "@/ui/AlertComponent.tsx";
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -38,6 +39,14 @@ export interface addClientValuesInterface {
 
 function AddClient() {
   const { mutate, isPending, isSuccess, isError } = useAddClient();
+  const [alertIsShowing, setAlertIsShowing] = useState(false);
+
+  useEffect(() => {
+    if (!isPending && isError) {
+      setAlertIsShowing(true);
+      setTimeout(() => setAlertIsShowing(false), 5000);
+    }
+  }, [isPending, isError]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const initialValues: addClientValuesInterface = {
@@ -80,11 +89,11 @@ function AddClient() {
   return (
     <Formik
       validationSchema={validationsSchema}
-      onSubmit={() => {}}
+      onSubmit={(values) => handleSubmit(values)}
       initialValues={initialValues}
     >
       {({ values, setFieldTouched, setFieldValue, errors, touched }) => (
-        <Form className="w-2/12">
+        <Form className="w-2/12 pl-4">
           <Modal
             isModalOpen={isModalOpen}
             setIsModalOpen={() => {
@@ -133,6 +142,16 @@ function AddClient() {
               <AddClientFinal />
             )}
           </Modal>
+          {isError ? (
+            <AlertComponent className={`alert-error`} active={alertIsShowing}>
+              <>
+                <h2 className="prose-md font-bold">
+                  Не удалось добавить клиента!
+                </h2>
+                <p className="prose-sm">{`Проверьте введённые данные ещё раз`}</p>
+              </>
+            </AlertComponent>
+          ) : null}
         </Form>
       )}
     </Formik>
