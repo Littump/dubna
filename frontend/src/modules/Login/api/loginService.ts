@@ -6,6 +6,12 @@ class loginService {
   async login(body: LoginDto) {
     return axios.post(`${API_URL}auth/token/login/`, body);
   }
+  async registration() {
+    return axios.post(`${API_URL}users/`, {
+      password: "1q2w3e4r5t%",
+      username: "89602580605",
+    });
+  }
   async getMe() {
     return axios.get(`${API_URL}users/`, {
       headers: {

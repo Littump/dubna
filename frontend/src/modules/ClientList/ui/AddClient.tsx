@@ -38,7 +38,7 @@ interface Props {
 }
 
 function AddClient({ refetch }: Props) {
-  const { mutate, isPending, isSuccess, isError } = useAddClient();
+  const { mutate, data, isPending, isSuccess, isError } = useAddClient();
   const [alertIsShowing, setAlertIsShowing] = useState(false);
 
   useEffect(() => {
@@ -86,6 +86,7 @@ function AddClient({ refetch }: Props) {
       setShowResult(true);
     }
   }, [isError, isPending, isSuccess]);
+
   return (
     <Formik
       validationSchema={validationsSchema}
@@ -148,7 +149,14 @@ function AddClient({ refetch }: Props) {
                 <h2 className="prose-md font-bold">
                   Не удалось добавить клиента!
                 </h2>
-                <p className="prose-sm">{`Проверьте введённые данные ещё раз`}</p>
+                <p className="prose-sm">
+                  {
+                    // @ts-ignore
+                    data && data?.status !== "500"
+                      ? `Проверьте введённые данные ещё раз.`
+                      : `Клиент должен быть старше 18 лет!`
+                  }
+                </p>
               </>
             </AlertComponent>
           ) : null}

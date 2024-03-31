@@ -3,6 +3,8 @@ import DropdownInput from "@/ui/DropdownInput.tsx";
 import ClientStatus from "@/modules/ClientList/types/clientStatus.ts";
 import ClientType from "@/modules/ClientList/types/clientType.ts";
 import { FiltersInitialValues } from "@/modules/ClientList/ui/index.tsx";
+import downloadCSV from "@/modules/Client/api/downloadCsvService.ts";
+import PeriodType from "@/modules/Client/types/periodType.ts";
 
 interface Props {
   setFieldValue: (name: string, value: string) => void;
@@ -18,7 +20,12 @@ interface Props {
     statusConnecting: number;
   };
 }
-
+const getPeriod = (period: string): PeriodType => {
+  if (period === "За год") return "1 y";
+  if (period === "За месяц") return "1 m";
+  if (period === "За неделю") return "7 d";
+  return "1 d";
+};
 function ClientFilters({ values, setFieldValue, summaryData }: Props) {
   const statuses: ClientStatus[] = [
     "Приостановлено",
@@ -27,7 +34,7 @@ function ClientFilters({ values, setFieldValue, summaryData }: Props) {
     "Подключение",
     "Расторгнут",
   ];
-  // const downloadTables = ["За год", "За месяц", "За неделю", "За день"];
+  const downloadTables = ["За год", "За месяц", "За неделю", "За день"];
   const types: ClientType[] = ["Физ. лицо", "Юр. лицо"];
 
   return (
@@ -35,10 +42,10 @@ function ClientFilters({ values, setFieldValue, summaryData }: Props) {
       <TextInput
         name="searchInput"
         placeholder="Поиск"
-        className="w-7/12"
+        className="w-5/12"
         isError={false}
       />
-      <div className="w-5/12 flex gap-3 ml-auto items-center justify-end">
+      <div className="w-7/12 flex gap-3 ml-auto items-center justify-end">
         <DropdownInput
           onClick={(val) => setFieldValue("status", val)}
           placeholder="Не выбран"
@@ -55,8 +62,20 @@ function ClientFilters({ values, setFieldValue, summaryData }: Props) {
         >
           {values.type !== "" ? values.type : "Тип клиента"}
         </DropdownInput>
+        <DropdownInput
+          onClick={(val) => downloadCSV(getPeriod(val))}
+          placeholder="Не выбран"
+          items={downloadTables}
+          dontShowTriangle={true}
+          className="w-40"
+        >
+          Скачать таблицу
+        </DropdownInput>
+
         <details className="dropdown dropdown-end">
-          <summary className="m-1 btn w-44">Получить сводку</summary>
+          <summary className="m-1 btn w-44 bg-white text-dark-gray">
+            Получить сводку
+          </summary>
           <div className="py-2 font-medium px-4 grid grid-cols-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-[360px]">
             <div className="flex flex-col gap-2">
               <div>
