@@ -43,7 +43,7 @@ class ClientViewSet(CustomModelViewSet):
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
-    def stats(request):
+    def stats(self, request):
         clients = Client.objects.all()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="clients.csv"'
