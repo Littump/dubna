@@ -9,12 +9,14 @@ type Props = {
   placeholder: string;
   onClick: (text: string) => void;
   error?: boolean;
+  dontShowTriangle?: boolean;
 };
 
 function DropdownInput({
   children,
   items,
   className,
+  dontShowTriangle,
   error,
   onClick,
   placeholder,
@@ -31,34 +33,38 @@ function DropdownInput({
       <summary
         tabIndex={0}
         role="button"
-        className={`flex justify-start bg-white text-dark-gray btn ${
-          error && "border border-red"
-        }`}
+        className={`flex ${
+          dontShowTriangle ? "justify-center" : "justify-start"
+        } bg-white text-dark-gray btn ${error && "border border-red"}`}
         {...props}
         onClick={() => setOpenMenu((prev) => !prev)}
       >
         {children}
-        <ChevronDownIcon
-          className={`w-5 h-5 transition absolute right-2 top-4 ${
-            openMenu ? "rotate-0" : "rotate-180"
-          }`}
-        />
+        {!dontShowTriangle && (
+          <ChevronDownIcon
+            className={`w-5 h-5 transition absolute right-2 top-4 ${
+              openMenu ? "rotate-0" : "rotate-180"
+            }`}
+          />
+        )}
       </summary>
       <ul
         tabIndex={0}
         className={`${
           openMenu ? "" : "hidden"
-        } absolute top-14 dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52`}
+        } absolute top-14 font-medium dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52`}
       >
-        <li
-          className="py-2 text-center hover:bg-base-300 transition cursor-pointer rounded-md"
-          onClick={() => {
-            onClick("");
-            setOpenMenu(false);
-          }}
-        >
-          {placeholder}
-        </li>
+        {!dontShowTriangle && (
+          <li
+            className="py-2 text-center hover:bg-base-300 transition cursor-pointer rounded-md"
+            onClick={() => {
+              onClick("");
+              setOpenMenu(false);
+            }}
+          >
+            {placeholder}
+          </li>
+        )}
         {items.map((item: string) => (
           <li
             onClick={() => {
@@ -66,7 +72,9 @@ function DropdownInput({
               setOpenMenu(false);
             }}
             key={item}
-            className="py-2 border-t text-center border-base-300 hover:bg-base-300 transition cursor-pointer rounded-md"
+            className={`py-2 ${
+              dontShowTriangle ? "border-b" : "border-t"
+            } text-center border-base-300 hover:bg-base-300 transition cursor-pointer rounded-md`}
           >
             {item}
           </li>

@@ -7,9 +7,19 @@ import { FiltersInitialValues } from "@/modules/ClientList/ui/index.tsx";
 interface Props {
   setFieldValue: (name: string, value: string) => void;
   values: FiltersInitialValues;
+  summaryData: {
+    all: number;
+    legal: number;
+    individual: number;
+    statusActive: number;
+    statusStopped: number;
+    statusAnnulled: number;
+    statusBanned: number;
+    statusConnecting: number;
+  };
 }
 
-function ClientFilters({ values, setFieldValue }: Props) {
+function ClientFilters({ values, setFieldValue, summaryData }: Props) {
   const statuses: ClientStatus[] = [
     "Приостановлено",
     "Активен",
@@ -17,7 +27,7 @@ function ClientFilters({ values, setFieldValue }: Props) {
     "Подключение",
     "Расторгнут",
   ];
-
+  // const downloadTables = ["За год", "За месяц", "За неделю", "За день"];
   const types: ClientType[] = ["Физ. лицо", "Юр. лицо"];
 
   return (
@@ -45,23 +55,56 @@ function ClientFilters({ values, setFieldValue }: Props) {
         >
           {values.type !== "" ? values.type : "Тип клиента"}
         </DropdownInput>
-
-        <span className="ml-6">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-            />
-          </svg>
-        </span>
+        <details className="dropdown dropdown-end">
+          <summary className="m-1 btn w-44">Получить сводку</summary>
+          <div className="py-2 font-medium px-4 grid grid-cols-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-[360px]">
+            <div className="flex flex-col gap-2">
+              <div>
+                Всего: <span className="font-semibold">{summaryData.all}</span>
+              </div>
+              <div>
+                Физ.лиц:{" "}
+                <span className="font-semibold">{summaryData.individual}</span>
+              </div>
+              <div>
+                Юр.лиц:{" "}
+                <span className="font-semibold">{summaryData.legal}</span>
+              </div>
+              <div>
+                Подключение:{" "}
+                <span className="font-semibold">
+                  {summaryData.statusConnecting}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div>
+                Заблокированных:{" "}
+                <span className="font-semibold">
+                  {summaryData.statusBanned}
+                </span>
+              </div>
+              <div>
+                Приостановленных:{" "}
+                <span className="font-semibold">
+                  {summaryData.statusStopped}
+                </span>
+              </div>
+              <div>
+                Расторгнуто:{" "}
+                <span className="font-semibold">
+                  {summaryData.statusAnnulled}
+                </span>
+              </div>
+              <div>
+                Активных:{" "}
+                <span className="font-semibold">
+                  {summaryData.statusActive}
+                </span>
+              </div>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
   );
