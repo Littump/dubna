@@ -2,10 +2,10 @@ import threading
 import time
 from datetime import datetime
 
-from api.models import ExpenseClient, Expense
+from api.models import Expense, ExpenseClient
+from dubna.logger import get_logger
 from reducers import Reducers
 from reducers.base import BaseReducer
-from dubna.logger import get_logger
 
 
 class ExpenseWorker(threading.Thread, metaclass=BaseReducer):

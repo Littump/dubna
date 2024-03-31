@@ -8,8 +8,8 @@ class loginService {
   }
   async registration() {
     return axios.post(`${API_URL}users/`, {
-      password: "1q2w3e4r5t%",
-      username: "89602580605",
+      password: "13qwerty13",
+      username: "89996665544",
     });
   }
   async getMe() {

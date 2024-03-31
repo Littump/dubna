@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from rest_framework.serializers import ModelSerializer, Serializer, CharField
-
-from api.models import Client, Payment, Expense, ExpenseClient
-from reducers import Reducers
+from api.models import Client, Expense, ExpenseClient, Payment
 from dubna.logger import get_logger
+from reducers import Reducers
+from rest_framework.serializers import ModelSerializer
 
 
 class CustomModelSerializer(ModelSerializer):
@@ -60,7 +59,7 @@ class ExpenseSerializer(CustomModelSerializer):
             self.reducers.expense_reducer.add_cycle_expense(
                 instance,
                 self.validated_data['client'],
-                instance.dat
+                instance.date
             )
         ExpenseClient.objects.create(
             client=self.validated_data['client'],
@@ -73,7 +72,3 @@ class ExpenseSerializer(CustomModelSerializer):
     class Meta:
         model = Expense
         fields = "__all__"
-
-
-class StatsSerializer(Serializer):
-    period = CharField(max_length=32)
