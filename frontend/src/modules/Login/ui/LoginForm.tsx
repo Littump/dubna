@@ -28,8 +28,8 @@ const validationsSchema = yup.object().shape({
 });
 const LoginForm = () => {
   const initialValues: loginDto = {
-    username: "",
-    password: "",
+    username: "89001112233",
+    password: "1q2w3e4r5t%",
   };
 
   const navigate = useNavigate();
