@@ -30,7 +30,7 @@ class Client(models.Model):
     balance = models.DecimalField(max_digits=10,
                                   decimal_places=2,
                                   default=0)
-    limit = models.DecimalField(max_digits=10, decimal_places=2, default=30000)
+    limit = models.DecimalField(max_digits=10, decimal_places=2, default=500)
 
     last_update = models.DateTimeField(auto_now=True)
 
