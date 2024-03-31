@@ -1,5 +1,6 @@
 ## Решение команды Fullstack Excel MISIS & ITMO & SPBPU на хакатоне Dubna.tech
-[Демо](https://dubna24.ru)
+[Приложение доступно здесь](https://dubna24.ru)  
+[Демо-видео работы](https://disk.yandex.ru/i/XKNGJIZQQbXaJA)  
 
 Тестовый user для входа:  
 телефон: 89001112233  
