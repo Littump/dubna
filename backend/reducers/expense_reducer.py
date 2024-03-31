@@ -27,8 +27,7 @@ class ExpenseReducer(metaclass=BaseReducer):
             next_time += timedelta(days=period_value*30)
         elif period_unit == 'y':
             next_time = (
-                current_time.replace(
-                    year=current_time.year + period_value)
+                current_time.replace(year=current_time.year + period_value)
             )
 
         return int(next_time.timestamp())
@@ -37,8 +36,8 @@ class ExpenseReducer(metaclass=BaseReducer):
         next_date = self._next_payment(date, expense.period)
         self.logger.info(message='Appoint next payment',
                          expense_id=expense.id,
-                         next_date=next_date,
-                         )
+                         next_date=next_date)
+
         ExpenseClient.objects.create(
             client=client,
             expense=expense,

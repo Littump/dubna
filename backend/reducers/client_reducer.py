@@ -8,17 +8,17 @@ class ClientReducer(metaclass=BaseReducer):
         self.logger = get_logger('ClientReducer')
 
     def update_balance(self, client: Client, change: float):
-        self.logger.info(message='Change balance:',
+        self.logger.info(message='Change balance',
                          client_id=client.id,
-                         change=change
-                         )
+                         change=change)
         client.balance += change
         client.save()
         self.update_status(client)
 
     def update_status(self, client: Client):
         prev_status = client.status
-        new_status = ""
+        new_status = None
+
         if client.status == 'annulled':
             return
 
@@ -53,6 +53,5 @@ class ClientReducer(metaclass=BaseReducer):
         self.logger.info(message='Change client status',
                          client_id=client.id,
                          prev_status=prev_status,
-                         new_status=new_status
-                         )
+                         new_status=new_status)
         client.save()

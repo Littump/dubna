@@ -46,6 +46,9 @@ class Client(models.Model):
         related_name='clients'
     )
 
+    def __str__(self) -> str:
+        return f'{self.name}, {self.phone}, {self.id}'
+
 
 class Payment(models.Model):
     TYPE_CHOICES = [
@@ -71,6 +74,9 @@ class Payment(models.Model):
         on_delete=models.CASCADE,
         related_name='payments'
     )
+    
+    def __str__(self) -> str:
+        return f'{self.type}, {self.amount}, {self.date}, {self.id}'
 
 
 class Expense(models.Model):
@@ -99,6 +105,9 @@ class Expense(models.Model):
         on_delete=models.CASCADE,
         related_name='expenses'
     )
+    
+    def __str__(self) -> str:
+        return f'{self.services}, {self.amount}, {self.date}, {self.id}'
 
 
 class ExpenseClient(models.Model):
@@ -120,3 +129,6 @@ class ExpenseClient(models.Model):
                 name='Рецепт содержит каждый ингредиент только один раз',
             )
         ]
+
+    def __str__(self) -> str:
+        return f'{self.client}, {self.expense}, {self.date}'

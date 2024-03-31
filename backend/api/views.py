@@ -51,8 +51,7 @@ class PaymentViewSet(CustomModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.logger.info(message='Delete payment',
-                         expense_id=instance.id
-                         )
+                         expense_id=instance.id)
         self.reducers.client_reducer.update_balance(
             instance.client,
             -instance.amount
@@ -73,21 +72,16 @@ class ExpenseViewSet(CustomModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         client = get_object_or_404(Client,
-                                   pk=serializer.validated_data['client'].id
-                                   )
+                                   pk=serializer.validated_data['client'].id)
         if not self.reducers.expense_reducer.valid_expense(client):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         serializer.save()
-        self.logger.info(message='Create expense',
-                         expense_id=serializer.validated_data['id']
-                         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.logger.info(message='Delete expense',
-                         expense_id=instance.id
-                         )
+                         expense_id=instance.id)
         self.reducers.client_reducer.update_balance(instance.client,
                                                     instance.amount)
         self.perform_destroy(instance)

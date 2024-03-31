@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer
 
 from api.models import Client, Payment, Expense, ExpenseClient
 from reducers import Reducers
+from dubna.logger import get_logger
 
 
 class CustomModelSerializer(ModelSerializer):
@@ -28,7 +29,11 @@ class ClientSerializer(CustomModelSerializer):
 
 
 class PaymentSerializer(CustomModelSerializer):
+    logger = get_logger('PaymentSerializer')
+
     def save(self, **kwargs):
+        self.logger.info(message='Create payment',
+                         data=self.validated_data)
         self.reducers.client_reducer.update_balance(
             self.validated_data['client'],
             self.validated_data['amount'],
@@ -41,7 +46,11 @@ class PaymentSerializer(CustomModelSerializer):
 
 
 class ExpenseSerializer(CustomModelSerializer):
+    logger = get_logger('ExpenseSerializer')
+
     def save(self, **kwargs):
+        self.logger.info(message='Create expense',
+                         data=self.validated_data)
         self.reducers.client_reducer.update_balance(
             self.validated_data['client'],
             -self.validated_data['amount'],
