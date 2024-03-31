@@ -5,6 +5,7 @@ volumes:
   static_value:
   media_value:
 
+
 services:
   # db:
   #   image: postgres:13.3-alpine
@@ -15,15 +16,20 @@ services:
   #   ports:
   #     - "5432:5432"
   backend:
-    build: ../backend/
-    restart: always
+    build:
+      context: ../backend/
+    restart: 'always'
     volumes:
       - ../backend/db.sqlite3:/var/lib/sqlite/data/db.sqlite3
       - static_value:/app/static/
       - media_value:/app/media/
     env_file: ../backend/.env
+    networks:
+      - test
     # depends_on:
     #   - db
+  
+
   # frontend:
   #   build:
   #     context: ../frontend/
@@ -42,3 +48,10 @@ services:
       # - ../frontend/dist:/usr/share/nginx/html/
     # depends_on:
     #   - frontend
+    networks:
+      - test
+
+networks:
+  test:
+    name: test
+    driver: bridge

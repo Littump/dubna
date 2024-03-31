@@ -39,14 +39,19 @@ class Logger(threading.Thread):
         self.name = name
         self.resource = {"type": str(os.uname()[1]), "id": str(os.getpid())}
         self.group = log_group_id
-        self.service = yandexcloud.SDK(**credentials).client(LogIngestionServiceStub)
+        self.service = yandexcloud.SDK(**credentials).client(
+            LogIngestionServiceStub
+        )
         self.start()
 
     def run(self):
         while self.running:
             time_elapsed = time.time() - self.start_time
             with self.lock:
-                if len(self.entries) >= 5 or (time_elapsed >= 10 and len(self.entries) > 0):
+                if (
+                    len(self.entries) >= 5 or
+                    (time_elapsed >= 10 and len(self.entries) > 0)
+                ):
                     self._process()
                     self.entries = []
                     self.start_time = time.time()
@@ -62,6 +67,41 @@ class Logger(threading.Thread):
             resource=LogEntryResource(**self.resource),
             entries=self.entries
         ))
+
+    def _to_correct_type(self, value):
+        try:
+            value = str(value)
+            return value
+        except Exception:
+            if isinstance(value, Model):
+                return str(value)
+            else:
+                try:
+                    if isinstance(value, dict):
+                        return {
+                            k: self._to_correct_type(v)
+                            for k, v in value.items()
+                        }
+                except Exception:
+                    try:
+                        if isinstance(value, list):
+                            return [self._to_correct_type(v) for v in value]
+                    except Exception:
+                        try:
+                            value = str(value)
+                            return value
+                        except Exception:
+                            try:
+                                value = repr(value)
+                                return value
+                            except Exception:
+                                try:
+                                    return " ".join(
+                                        [self._to_correct_type(x)
+                                         for x in value]
+                                    )
+                                except Exception as e:
+                                    return str(e)
 
     def _message(self, args, kwargs, level='LEVEL_UNSPECIFIED'):
         _timestamp = Timestamp()
@@ -90,16 +130,10 @@ class Logger(threading.Thread):
             if "message" in kwargs:
                 result["message"] = str(kwargs.pop("message"))
             for k, v in kwargs.items():
-                if isinstance(v, Model):
-                    kwargs[k] = model_to_dict(v)
-                else:
-                    try:
-                        kwargs[k] = dict(v)
-                    except Exception:
-                        try:
-                            kwargs[k] = str(v)
-                        except Exception as e:
-                            kwargs[k] = 'ERROR: ' + str(e)
+                try:
+                    kwargs[k] = self._to_correct_type(v)
+                except Exception:
+                    pass
             result["json_payload"].update(kwargs)
         return result
 

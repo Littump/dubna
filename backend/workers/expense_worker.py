@@ -1,13 +1,17 @@
 import threading
 import time
+from datetime import datetime
 
-from api.models import ExpenseClient
+from api.models import Expense, ExpenseClient
+from dubna.logger import get_logger
 from reducers import Reducers
+from reducers.base import BaseReducer
 
 
-class ExpenseWorker(threading.Thread):
-    def init(self):
-        super(ExpenseWorker, self).init()
+class ExpenseWorker(threading.Thread, metaclass=BaseReducer):
+    def __init__(self):
+        super().__init__()
+        self.logger = get_logger('ExpenseWorker')
         self.reducers = Reducers()
         self.start_time = time.time()
         self.lock = threading.Lock()
@@ -21,10 +25,32 @@ class ExpenseWorker(threading.Thread):
                 date__lt=int(time.time()),
             )
             for item in payments:
+                self.logger.info(message='Pay expense',
+                                 expense_id=item.expense.id,
+                                 client_id=item.client.id)
+                if not self.reducers.expense_reducer.valid_expense(
+                    item.client
+                ):
+                    continue
                 item.is_paid = True
-                self.reducers.client_reducer.update_balance(item.client, -item.expense.amount)
+
+                Expense.objects.create(
+                    amount=item.expense.amount,
+                    client=item.client,
+                    services=item.expense.services,
+                    date=item.date,
+                )
+
+                self.reducers.client_reducer.update_balance(
+                    client=item.client,
+                    change=-item.expense.amount,
+                )
                 item.save()
 
-                self.reducers.expense_reducer.add_cycle_expense(item.expense, item.client)
+                self.reducers.expense_reducer.add_cycle_expense(
+                    expense=item.expense,
+                    client=item.client,
+                    date=datetime.fromtimestamp(item.date)
+                )
 
-            time.sleep(5 * 60)
+            time.sleep(5)
