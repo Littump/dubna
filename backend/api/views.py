@@ -20,12 +20,15 @@ class CustomModelViewSet(ModelViewSet):
 class ClientViewSet(CustomModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+    
+    logger = get_logger('ClientViewSet')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     @action(methods=['get'], detail=True)
     def payments(self, request, pk=None):
+        self.logger.info(message='Get payments', client_id=pk)
         payments = Payment.objects.filter(client=self.get_object())
         serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data)
