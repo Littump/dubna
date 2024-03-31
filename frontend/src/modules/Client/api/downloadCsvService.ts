@@ -1,19 +1,12 @@
-import PeriodType from "@/modules/Client/types/periodType.ts";
 import axios from "axios";
 import API_URL from "@/config/api.ts";
 
-async function downloadCSV(period: PeriodType) {
-  const response = await axios.post(
-    `${API_URL}stats/`,
-    {
-      period,
+async function downloadCSV() {
+  const response = await axios.get(`${API_URL}clients/file/`, {
+    headers: {
+      Authorization: "Token " + localStorage.getItem("token"),
     },
-    {
-      headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
-      },
-    },
-  );
+  });
 
   if (response?.status == 200) {
     const blob = await response.data.blob();
