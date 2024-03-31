@@ -1,0 +1,4 @@
+backend/venv
+backend/static
+backend/db.sqlite3
+backend/.env
