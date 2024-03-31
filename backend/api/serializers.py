@@ -3,12 +3,24 @@ from api.models import Client, Payment, Expense, ExpenseClient
 from reducers import Reducers
 import time
 
+from datetime import datetime
 
 class CustomModelSerializer(ModelSerializer):
     reducers = Reducers()
 
 
 class ClientSerializer(CustomModelSerializer):
+    def validate_birthday(self, value):
+        if not value:
+            return value
+
+        now = datetime.now()
+        now_18year = now.replace(year=now.year - 18)
+        if value > now_18year:
+            raise ValueError('Client must be at least 18 years old')
+
+        return value
+
     class Meta:
         model = Client
         exclude = ['user']
