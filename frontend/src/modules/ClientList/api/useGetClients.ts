@@ -5,5 +5,4 @@ export const useGetClients = () =>
   useQuery({
     queryKey: ["getClients"],
     queryFn: () => clientService.getClients(),
-    refetchInterval: 2000,
   });

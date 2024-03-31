@@ -1,6 +1,10 @@
 import AddClient from "@/modules/ClientList/ui/AddClient.tsx";
 
-const ClientListHeader = () => {
+interface Props {
+  refetch: () => void;
+}
+
+const ClientListHeader = ({ refetch }: Props) => {
   return (
     <div className="font-semibold flex items-center w-full ">
       <div className="flex w-10/12 bg-white border-b border-gray-dropdown text-center">
@@ -20,7 +24,7 @@ const ClientListHeader = () => {
           Номер телефона
         </div>
       </div>
-      <AddClient />
+      <AddClient refetch={refetch} />
     </div>
   );
 };

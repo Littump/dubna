@@ -7,7 +7,7 @@ type ClientStatus =
 export type ClientStatusEnglish =
   | "connecting"
   | "active"
-  | "blocked"
+  | "banned"
   | "annulled"
   | "stopped";
 export default ClientStatus;

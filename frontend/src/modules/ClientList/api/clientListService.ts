@@ -11,11 +11,15 @@ class clientListService {
     });
   }
   async addClient(body: AddClientDto) {
-    return axios.post(`${API_URL}clients/`, body, {
-      headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+    return axios.post(
+      `${API_URL}clients/`,
+      { ...body, status: "active" },
+      {
+        headers: {
+          Authorization: "Token " + localStorage.getItem("token"),
+        },
       },
-    });
+    );
   }
   async deleteClient(id: number) {
     return axios.delete(`${API_URL}clients/${id}/`, {

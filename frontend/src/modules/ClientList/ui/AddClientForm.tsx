@@ -4,8 +4,6 @@ import { FormikErrors, FormikTouched } from "formik";
 import { addClientValuesInterface } from "@/modules/ClientList/ui/AddClient.tsx";
 import DateInput from "@/ui/DateInput.tsx";
 import { useEffect } from "react";
-import DropdownInput from "@/ui/DropdownInput.tsx";
-import clientStatus from "@/modules/ClientList/types/clientStatus.ts";
 
 interface Props {
   setFieldValue: SetFieldValueType;
@@ -24,9 +22,8 @@ function AddClientForm({
   isPhysical,
   errors,
   touched,
-  values,
   showResult,
-  setFieldTouched,
+
   isPending,
   setShowResult,
 }: Props) {
@@ -37,29 +34,9 @@ function AddClientForm({
     }
   }, [showResult]);
 
-  const statuses: clientStatus[] = [
-    "Активен",
-    "Приостановлено",
-    "Подключение",
-    "Блокировка",
-    "Расторгнут",
-  ];
-
   return (
-    <div className="flex flex-col min-h-[400px]">
+    <div className="flex flex-col min-h-[500px]">
       <h2 className="text-2xl">Информация</h2>
-      <span className="text-sm px-1 py-2">Статус подключения</span>
-      <DropdownInput
-        placeholder="Статус"
-        items={statuses}
-        error={values.status === "" && touched.status}
-        onClick={(val) => {
-          setFieldTouched("status");
-          setFieldValue("status", val);
-        }}
-      >
-        {values.status !== "" ? values.status : "Статус"}
-      </DropdownInput>
       <TextInput
         name="name"
         isError={!!(errors.name && touched.name)}
@@ -69,6 +46,7 @@ function AddClientForm({
         }`}
       ></TextInput>
       {isPhysical && <DateInput name="birthday" label="Дата рождения" />}
+
       <TextInput
         name="phone"
         label="Телефон"

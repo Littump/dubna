@@ -7,8 +7,6 @@ import Modal from "@/ui/Modal.tsx";
 import { useEffect, useState } from "react";
 import { useAddClient } from "@/modules/ClientList/api/addClient.ts";
 import AddClientDto from "@/modules/ClientList/types/addClient.dto.ts";
-import clientStatus from "@/modules/ClientList/types/clientStatus.ts";
-import getStatusToRes from "@/helpers/getStatusToRes.ts";
 import getBirthdayFromDate from "@/helpers/getBirthdayFromDate.ts";
 import * as yup from "yup";
 import AlertComponent from "@/ui/AlertComponent.tsx";
@@ -24,7 +22,6 @@ const validationsSchema = yup.object().shape({
     .min(11, "Неверно введён")
     .max(11, "Неверно введён")
     .matches(phoneRegExp),
-  status: yup.string().required("Введите статус").min(4, "Неверно введён"),
   address: yup.string().required("Введите адрес").min(4, "Неверно введён"),
 });
 export interface addClientValuesInterface {
@@ -33,20 +30,26 @@ export interface addClientValuesInterface {
   name: string;
   birthday: Date;
   phone: string;
-  status: clientStatus | "";
   address: string;
 }
 
-function AddClient() {
+interface Props {
+  refetch: () => void;
+}
+
+function AddClient({ refetch }: Props) {
   const { mutate, isPending, isSuccess, isError } = useAddClient();
   const [alertIsShowing, setAlertIsShowing] = useState(false);
 
   useEffect(() => {
+    if (!isPending && isSuccess) {
+      refetch();
+    }
     if (!isPending && isError) {
       setAlertIsShowing(true);
       setTimeout(() => setAlertIsShowing(false), 5000);
     }
-  }, [isPending, isError]);
+  }, [isPending, isError, isSuccess]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const initialValues: addClientValuesInterface = {
@@ -55,7 +58,6 @@ function AddClient() {
     name: "",
     birthday: new Date(),
     phone: "",
-    status: "",
     address: "",
   };
 
@@ -66,7 +68,6 @@ function AddClient() {
         birthday: getBirthdayFromDate(body.birthday),
         client_type: "individual",
         phone: body.phone,
-        status: getStatusToRes(body.status),
         connection_address: body.address,
         name: body.name,
       };
@@ -74,7 +75,6 @@ function AddClient() {
       data = {
         client_type: "legal",
         phone: body.phone,
-        status: getStatusToRes(body.status),
         connection_address: body.address,
         name: body.name,
       };
