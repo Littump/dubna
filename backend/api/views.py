@@ -94,4 +94,5 @@ class ExpenseViewSet(CustomModelViewSet):
 def stats(request):
     serializer = StatsSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    return Response(serializer.data)
+    clients = Client.objects.all()
+    ...
