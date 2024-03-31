@@ -37,4 +37,7 @@ body {
     background-color: #c0c0c0; /* цвет бегунка */
     border-radius: 20px; /* округлось бегунка */
   }
+  *{
+    @apply font-medium;
+  }
 }

@@ -124,11 +124,17 @@ function ClientServices() {
           </div>
 
           <div className="flex flex-col">
-            <div className="flex font-semibold py-4">
-              <span className="w-4/12">Тип</span>
-              <span className="w-3/12">Сумма</span>
-              <span className="w-3/12">Дата</span>
-            </div>
+            {services?.length === 0 || !services ? (
+              <div className="mx-auto text-dark-gray mt-36">
+                Добавьте платёж
+              </div>
+            ) : (
+              <div className="flex font-semibold py-4">
+                <span className="w-4/12">Тип</span>
+                <span className="w-3/12">Сумма</span>
+                <span className="w-3/12">Дата</span>
+              </div>
+            )}
 
             {services.map(
               (el: {

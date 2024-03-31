@@ -1,3 +1,5 @@
+import { ClientStatusEnglish } from "@/modules/ClientList/types/clientStatus.ts";
+
 export type ClientStatus =
   | "Активен"
   | "Подключение"
@@ -30,6 +32,17 @@ export default interface ClientInfoType {
   phone: string;
   id: number;
   birthday: Date | null;
+  address: string;
+  balance: number;
+  limit: number;
+}
+export interface ClientInfoTypeEnglish {
+  name: string;
+  status: ClientStatusEnglish;
+  client_type: "legal" | "individual";
+  phone: string;
+  id: number;
+  birthday: string | null;
   address: string;
   balance: number;
   limit: number;
