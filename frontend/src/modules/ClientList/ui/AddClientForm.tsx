@@ -25,7 +25,6 @@ function AddClientForm({
   errors,
   touched,
   values,
-  handleSubmit,
   showResult,
   setFieldTouched,
   isPending,
@@ -66,7 +65,7 @@ function AddClientForm({
         isError={!!(errors.name && touched.name)}
         label={`${isPhysical ? "ФИО" : "Название компании"}`}
         placeholder={`${
-          isPhysical ? "Иван Иванов Иванович" : "Название компании"
+          isPhysical ? "Иванов Иван Иванович" : "Название компании"
         }`}
       ></TextInput>
       {isPhysical && <DateInput name="birthday" label="Дата рождения" />}
@@ -79,7 +78,7 @@ function AddClientForm({
       <TextInput
         name="address"
         label="Адрес подключения"
-        placeholder="Г. Санкт-петербург улица пушкина дом 2"
+        placeholder="Москва, улица Профсоюзная, дом 42"
         isError={!!(errors.address && touched.address)}
       ></TextInput>
 
@@ -106,9 +105,8 @@ function AddClientForm({
           Назад
         </button>
         <button
-          type="button"
+          type="submit"
           className="btn border-0 mt-4 text-xl bg-blue text-white btn-neutral"
-          onClick={handleSubmit}
         >
           {isPending ? <span className="loading"></span> : "Далее"}
           <svg

@@ -1,5 +1,5 @@
-import { Formik } from "formik";
-import { Form, useNavigate } from "react-router-dom";
+import { Form, Formik } from "formik";
+import { useNavigate } from "react-router-dom";
 import TextInput from "@/ui/TextInput.tsx";
 import loginDto from "@/modules/Login/types/login.dto.ts";
 import * as yup from "yup";
@@ -24,8 +24,7 @@ const validationsSchema = yup.object().shape({
     .typeError("Должно быть строкой")
     .required("Обязательное поле")
     .min(8, "Слишком простой")
-    .minNumbers(1, "Добавьте 1 цифру")
-    .minSymbols(1, "Добавьте 1 специальный символ"),
+    .minNumbers(1, "Добавьте 1 цифру"),
 });
 const LoginForm = () => {
   const initialValues: loginDto = {
@@ -55,9 +54,9 @@ const LoginForm = () => {
     <Formik
       validationSchema={validationsSchema}
       initialValues={initialValues}
-      onSubmit={() => {}}
+      onSubmit={(values) => handleSubmit(values)}
     >
-      {({ values, errors, touched }) => (
+      {({ errors, touched }) => (
         <Form className="py-10 px-6 bg-white rounded-xl">
           <h1 className="text-3xl font-semibold">Вход</h1>
           <div className="flex flex-col gap-6 mt-6">
@@ -75,7 +74,6 @@ const LoginForm = () => {
               placeholder="пароль"
             />
             <button
-              onClick={() => handleSubmit(values)}
               type="submit"
               className={`btn text-white mt-2 bg-blue text-xl font-normal border-0 btn-neutral`}
             >
