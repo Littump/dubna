@@ -9,7 +9,6 @@ import { useGetClientInfo } from "@/modules/Client/api/useGetClientInfo.ts";
 import getStatusFromRes from "@/helpers/getStatusFromRes.ts";
 import { useUpdateClient } from "@/modules/Client/api/useUpdateClientInfo.ts";
 import AddClientDto from "@/modules/ClientList/types/addClient.dto.ts";
-import getStatusToRes from "@/helpers/getStatusToRes.ts";
 import getBirthdayFromDate from "@/helpers/getBirthdayFromDate.ts";
 import DropdownInput from "@/ui/DropdownInput.tsx";
 import clientStatus from "@/modules/ClientList/types/clientStatus.ts";
