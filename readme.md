@@ -1,4 +1,11 @@
-## Решение команды Fullstack Excel MISIS & ITMO & SPBPU на хакатоне Dubna.tech
+## Dubna.tech 2024 — 2-е место
+
+**Команда:** Fullstack Excel (МИСИС, ИТМО, СПбПУ).  
+**Результат:** призёры хакатона [Dubna.tech](https://dubna24.ru).
+
+---
+
+## Решение команды на хакатоне Dubna.tech
 [Приложение доступно здесь](https://dubna24.ru)  
 [Демо-видео работы](https://disk.yandex.ru/i/XKNGJIZQQbXaJA)  
 
